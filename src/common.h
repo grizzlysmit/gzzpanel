@@ -30,6 +30,8 @@ namespace Wnck {
 
 	class Screen;
 	
+	class Window;
+	
 }; // namespace Wnck //
 
 namespace Glib
@@ -43,6 +45,8 @@ namespace Glib
 	 * @relates Gtk::AboutDialog
 	 */
 	Wnck::Screen* wrap(WnckScreen* object/*, bool take_copy = false*/);
+	
+	Wnck::Window* wrap(WnckWindow* object/*, bool take_copy = false*/);
 } // namespace Glib //
 
 #endif // _WNCK_COMMON_H_

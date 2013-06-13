@@ -27,6 +27,8 @@
 #include <vector>
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
 #include <libwnck/libwnck.h>
+#include "wnck-application.h"
+#include "wnck-class-group.h"
 #include "common.h"
 
 namespace Wnck {
@@ -35,8 +37,35 @@ namespace Wnck {
 	{
 		public:
 			Window(WnckWindow* win);
+			Window(gulong xwindow);
 			~Window();
 
+			///Provides access to the underlying C GtkObject.
+			WnckWindow* gobj() { return reinterpret_cast<WnckWindow*>(gobject_); };
+
+			///Provides access to the underlying C GtkObject.
+			const WnckWindow* gobj() const { return reinterpret_cast<WnckWindow*>(gobject_); };
+
+			bool is_valid_xwindow_id(gulong xwindow) const;
+
+			// WnckWindow stuff //
+			Screen *get_screen();
+			bool has_name() const;
+			const Glib::ustring get_name() const;
+			bool has_icon_name() const;
+			const Glib::ustring get_icon_name() const;
+			bool get_icon_is_fallback() const;
+			Glib::RefPtr<Gdk::Pixbuf> get_icon() const;
+			Glib::RefPtr<Gdk::Pixbuf> get_mini_icon() const;
+			Application *get_application();
+			bool has_transient() const;
+			Window *get_transient();
+			gulong get_group_leader();
+			gulong get_xid();
+			ClassGroup *get_class_group();
+			const Glib::ustring get_class_group_name() const;
+			const Glib::ustring get_class_instance_name() const;
+			bool has_class_instance() const;
 		protected:
 
 		private:
@@ -45,18 +74,7 @@ namespace Wnck {
 	
 }; //  namespace Wnck  //
 
-namespace Glib
-{
-	/** A Glib::wrap() method for this object.
-		* 
-	 * @param object The C instance.
-	 * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-	 * @result A C++ instance that wraps this C instance.
-	 *
-	 * @relates Gtk::AboutDialog
-	 */
-	Wnck::Window* wrap(WnckWindow* object/*, bool take_copy = false*/);
-} // namespace Glib //
+
 
 
 #endif // _WNCK_WINDOW_H_

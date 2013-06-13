@@ -29,6 +29,8 @@
 #include <libwnck/libwnck.h>
 #include "wnck-window.h"
 #include "wnck-workspace.h"
+#include "wnck-application.h"
+#include "wnck-class-group.h"
 #include "common.h"
 
 namespace Wnck {
@@ -42,10 +44,10 @@ namespace Wnck {
 			~Screen();
 
 			///Provides access to the underlying C GtkObject.
-			Screen* gobj() { return reinterpret_cast<Screen*>(gobject_); };
+			WnckScreen* gobj() { return reinterpret_cast<WnckScreen*>(gobject_); };
 
 			///Provides access to the underlying C GtkObject.
-			const Screen* gobj() const { return reinterpret_cast<Screen*>(gobject_); };
+			const WnckScreen* gobj() const { return reinterpret_cast<WnckScreen*>(gobject_); };
 
 			// Screen stuff //
 			int get_number() const;
@@ -62,6 +64,28 @@ namespace Wnck {
 			std::vector<Workspace*> get_workspaces() const;
 			Workspace *get_workspace(int workspace) const;
 			int get_workspace_count() const;
+			void change_workspace_count(int count);
+			int try_set_workspace_layout(int current_token, int rows, int columns);
+			void release_workspace_layout(int current_token);
+			void move_viewport(int x, int y);
+			gulong get_background_pixmap() const;
+			bool get_showing_desktop() const;
+			void toggle_showing_desktop(bool show);
+			Glib::SignalProxy2<void, Screen*, Window*> signal_active_window_changed();
+			Glib::SignalProxy2<void, Screen*, Workspace*> signal_active_workspace_changed();
+			Glib::SignalProxy1<void, Application*> signal_application_closed();
+			Glib::SignalProxy1<void, Application*> signal_application_opened();
+			Glib::SignalProxy0<void> signal_background_changed();
+			Glib::SignalProxy1<void, ClassGroup*> signal_class_group_closed();
+			Glib::SignalProxy1<void, ClassGroup*> signal_class_group_opened();
+			Glib::SignalProxy0<void> signal_showing_desktop_changed();
+			Glib::SignalProxy0<void> signal_viewports_changed();
+			Glib::SignalProxy1<void, Window*> signal_window_closed();
+			Glib::SignalProxy0<void> signal_window_manager_changed();
+			Glib::SignalProxy1<void, Window*> signal_window_opened();
+			Glib::SignalProxy0<void> signal_window_stacking_changed();
+			Glib::SignalProxy1<void, Workspace*> signal_workspace_created();
+			Glib::SignalProxy1<void, Workspace*> signal_workspace_destroyed();
 		protected:
 
 		private:

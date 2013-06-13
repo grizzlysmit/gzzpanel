@@ -91,6 +91,7 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		//m_taskbar->set_size_request(refscreen->get_width() - 2028, 36);     // try and force it //
 	}
 
+	set_type_hint(Gdk::WINDOW_TYPE_HINT_DOCK);
 	set_default_size(refscreen->get_width() - 49, 38);
 	resize(refscreen->get_width() - 49, 38);
 	set_size_request(refscreen->get_width() - 49, 38); // try and force it //

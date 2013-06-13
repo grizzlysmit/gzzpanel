@@ -30,9 +30,9 @@ namespace Wnck {
 	{
 	}
 
-	Screen *Workspace::get_screen() const
+	Screen *Workspace::get_screen()
 	{
-		return Glib::wrap(wnck_workspace_get_screen(const_cast<WnckWorkspace*>(reinterpret_cast<const WnckWorkspace*>(gobj()))));
+		return Glib::wrap(wnck_workspace_get_screen(reinterpret_cast<WnckWorkspace*>(gobj())));
 	}
 
 	int Workspace::get_number() const
@@ -85,9 +85,9 @@ namespace Wnck {
 		return wnck_workspace_get_layout_column(const_cast<WnckWorkspace*>(reinterpret_cast<const WnckWorkspace*>(gobj())));
 	}
 
-	Workspace *Workspace::get_neighbor(MotionDirection direction) const
+	Workspace *Workspace::get_neighbor(MotionDirection direction)
 	{
-		return Glib::wrap(wnck_workspace_get_neighbor(const_cast<WnckWorkspace*>(reinterpret_cast<const WnckWorkspace*>(gobj())), static_cast<WnckMotionDirection>(direction)));
+		return Glib::wrap(wnck_workspace_get_neighbor(reinterpret_cast<WnckWorkspace*>(gobj()), static_cast<WnckMotionDirection>(direction)));
 	}
 
 	void Workspace::activate(guint32 timestamp)
@@ -99,10 +99,10 @@ namespace Wnck {
 
 namespace {
 	
-	static void Workspace_signal_name_changed_callback(WnckWorkspace* self, WnckWorkspace* p0,void* data)
+	static void Workspace_signal_name_changed_callback(WnckWorkspace* self, WnckWorkspace* p0, void* data)
 	{
 		using namespace Wnck;
-		typedef sigc::slot< void,Workspace* > SlotType;
+		typedef sigc::slot< void, Workspace* > SlotType;
 
 		// Do not try to call a signal on a disassociated wrapper.
 		if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
@@ -111,8 +111,7 @@ namespace {
 			try {
 #endif //GLIBMM_EXCEPTIONS_ENABLED
 				if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
-					(*static_cast<SlotType*>(slot))(Glib::wrap(p0)
-					                                );
+					(*static_cast<SlotType*>(slot))(Glib::wrap(p0));
 #ifdef GLIBMM_EXCEPTIONS_ENABLED
 			}
 			catch(...)

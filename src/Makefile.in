@@ -70,7 +70,9 @@ am_gzzpanel_OBJECTS = gzzpanel-main.$(OBJEXT) \
 	gzzpanel-wnck-tasklist.$(OBJEXT) gzzpanel-taskbar.$(OBJEXT) \
 	gzzpanel-task.$(OBJEXT) gzzpanel-wnck-screen.$(OBJEXT) \
 	gzzpanel-wnck-window.$(OBJEXT) \
-	gzzpanel-wnck-workspace.$(OBJEXT)
+	gzzpanel-wnck-workspace.$(OBJEXT) \
+	gzzpanel-wnck-application.$(OBJEXT) \
+	gzzpanel-wnck-class-group.$(OBJEXT)
 gzzpanel_OBJECTS = $(am_gzzpanel_OBJECTS)
 am__DEPENDENCIES_1 =
 gzzpanel_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -352,7 +354,11 @@ gzzpanel_SOURCES = \
 	wnck-window.h \
 	wnck-workspace.cc \
 	wnck-workspace.h \
-	common.h
+	common.h \
+	wnck-application.cc \
+	wnck-application.h \
+	wnck-class-group.cc \
+	wnck-class-group.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 gzzpanel_LDFLAGS = \
@@ -455,6 +461,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-mainwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-task.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-taskbar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-application.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-class-group.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-pager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-screen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-tasklist.Po@am__quote@
@@ -607,6 +615,34 @@ gzzpanel-wnck-workspace.obj: wnck-workspace.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-workspace.cc' object='gzzpanel-wnck-workspace.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-workspace.obj `if test -f 'wnck-workspace.cc'; then $(CYGPATH_W) 'wnck-workspace.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-workspace.cc'; fi`
+
+gzzpanel-wnck-application.o: wnck-application.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-wnck-application.o -MD -MP -MF $(DEPDIR)/gzzpanel-wnck-application.Tpo -c -o gzzpanel-wnck-application.o `test -f 'wnck-application.cc' || echo '$(srcdir)/'`wnck-application.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-wnck-application.Tpo $(DEPDIR)/gzzpanel-wnck-application.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-application.cc' object='gzzpanel-wnck-application.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-application.o `test -f 'wnck-application.cc' || echo '$(srcdir)/'`wnck-application.cc
+
+gzzpanel-wnck-application.obj: wnck-application.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-wnck-application.obj -MD -MP -MF $(DEPDIR)/gzzpanel-wnck-application.Tpo -c -o gzzpanel-wnck-application.obj `if test -f 'wnck-application.cc'; then $(CYGPATH_W) 'wnck-application.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-application.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-wnck-application.Tpo $(DEPDIR)/gzzpanel-wnck-application.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-application.cc' object='gzzpanel-wnck-application.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-application.obj `if test -f 'wnck-application.cc'; then $(CYGPATH_W) 'wnck-application.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-application.cc'; fi`
+
+gzzpanel-wnck-class-group.o: wnck-class-group.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-wnck-class-group.o -MD -MP -MF $(DEPDIR)/gzzpanel-wnck-class-group.Tpo -c -o gzzpanel-wnck-class-group.o `test -f 'wnck-class-group.cc' || echo '$(srcdir)/'`wnck-class-group.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-wnck-class-group.Tpo $(DEPDIR)/gzzpanel-wnck-class-group.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-class-group.cc' object='gzzpanel-wnck-class-group.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-class-group.o `test -f 'wnck-class-group.cc' || echo '$(srcdir)/'`wnck-class-group.cc
+
+gzzpanel-wnck-class-group.obj: wnck-class-group.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-wnck-class-group.obj -MD -MP -MF $(DEPDIR)/gzzpanel-wnck-class-group.Tpo -c -o gzzpanel-wnck-class-group.obj `if test -f 'wnck-class-group.cc'; then $(CYGPATH_W) 'wnck-class-group.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-class-group.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-wnck-class-group.Tpo $(DEPDIR)/gzzpanel-wnck-class-group.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-class-group.cc' object='gzzpanel-wnck-class-group.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-class-group.obj `if test -f 'wnck-class-group.cc'; then $(CYGPATH_W) 'wnck-class-group.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-class-group.cc'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

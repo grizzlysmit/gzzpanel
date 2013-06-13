@@ -47,10 +47,10 @@ namespace Wnck {
 			~Pager();
 
 			///Provides access to the underlying C GtkObject.
-			Pager* gobj() { return reinterpret_cast<Pager*>(gobject_); };
+			WnckPager* gobj() { return reinterpret_cast<WnckPager*>(gobject_); };
 
 			///Provides access to the underlying C GtkObject.
-			const Pager* gobj() const { return reinterpret_cast<Pager*>(gobject_); };
+			const WnckPager* gobj() const { return reinterpret_cast<WnckPager*>(gobject_); };
 
 			// the Pager specific stuff //
 			bool set_orientation(Gtk::Orientation orientation);

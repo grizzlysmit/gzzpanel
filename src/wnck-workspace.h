@@ -45,13 +45,13 @@ namespace Wnck {
 			~Workspace();
 
 			///Provides access to the underlying C GtkObject.
-			Workspace* gobj() { return reinterpret_cast<Workspace*>(gobject_); };
+			WnckWorkspace* gobj() { return reinterpret_cast<WnckWorkspace*>(gobject_); };
 
 			///Provides access to the underlying C GtkObject.
-			const Workspace* gobj() const { return reinterpret_cast<Workspace*>(gobject_); };
+			const WnckWorkspace* gobj() const { return reinterpret_cast<WnckWorkspace*>(gobject_); };
 
 			// the Workspace problem //
-			Screen *get_screen() const;
+			Screen *get_screen();
 			int get_number() const;
 			const Glib::ustring get_name() const;
 			void change_name(const Glib::ustring &name);
@@ -62,7 +62,7 @@ namespace Wnck {
 			bool is_virtual() const;
 			int get_layout_row() const;
 			int get_layout_column() const;
-			Workspace *get_neighbor(MotionDirection direction) const;
+			Workspace *get_neighbor(MotionDirection direction);
 			void activate(guint32 timestamp);
 			Glib::SignalProxy1<void, Workspace*> signal_name_changed();
 		protected:
