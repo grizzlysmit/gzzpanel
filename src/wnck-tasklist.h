@@ -30,9 +30,18 @@
 
 namespace Wnck {
 
+	class Tasklist_Class;
+
 	class Tasklist: public Gtk::Container 
 	{
 		public:
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+			typedef Tasklist CppObjectType;
+			typedef Tasklist_Class CppClassType;
+			typedef WnckTasklist BaseObjectType;
+			typedef WnckTasklistClass BaseClassType;
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+			
 			enum GroupingType { 
 				NEVER_GROUP = WNCK_TASKLIST_NEVER_GROUP,
 				AUTO_GROUP = WNCK_TASKLIST_AUTO_GROUP,
@@ -41,6 +50,9 @@ namespace Wnck {
 
 			//                      return,      icon_name         size    flags              //
 			typedef sigc::signal<GdkPixbuf*, const Glib::ustring&, int, unsigned> type_signal_load_icon;
+
+			//                      return,      icon_name         size    flags              //
+			typedef sigc::signal<void, Gtk::Allocation&> type_signal_allocation;
 			
 			Tasklist();
 			~Tasklist();
@@ -64,15 +76,28 @@ namespace Wnck {
 			
 			// signal for the load icon fun call back //
 			type_signal_load_icon signal_load_icon();
+			type_signal_allocation signal_allocation();
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+			static GType get_type()      G_GNUC_CONST;
+
+
+			static GType get_base_type() G_GNUC_CONST;
+#endif
+			
 		protected:
 			type_signal_load_icon m_signal_load_icon;
+			type_signal_allocation m_signal_allocation;
 
+			explicit Tasklist(const Glib::ConstructParams& construct_params);
+			explicit Tasklist(WnckTasklist* castitem);
+			
 			//Overrides:
-			virtual Gtk::SizeRequestMode get_request_mode_vfunc() const;
+/*			virtual Gtk::SizeRequestMode get_request_mode_vfunc() const;
 			virtual void get_preferred_width_vfunc(int& minimum_width, int& natural_width) const;
 			virtual void get_preferred_height_for_width_vfunc(int width, int& minimum_height, int& natural_height) const;
 			virtual void get_preferred_height_vfunc(int& minimum_height, int& natural_height) const;
-			virtual void get_preferred_width_for_height_vfunc(int height, int& minimum_width, int& natural_width) const;
+			virtual void get_preferred_width_for_height_vfunc(int height, int& minimum_width, int& natural_width) const;*/
 			virtual void on_size_allocate(Gtk::Allocation& allocation);
 			virtual void on_map();
 			virtual void on_unmap();
@@ -80,10 +105,35 @@ namespace Wnck {
 			virtual void on_unrealize();
 			virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
 		private:
+			friend class Tasklist_Class;
+			static CppClassType tasklist_class_;
+
+			// noncopyable
+			Tasklist(const Tasklist&);
+			Tasklist& operator=(const Tasklist&);
+			
 
 	};
 	
 }; // namespace Wnck //
+
+
+namespace Glib
+{
+	/** A Glib::wrap() method for this object.
+		* 
+	 * @param object The C instance.
+	 * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
+	 * @result A C++ instance that wraps this C instance.
+	 *
+	 * @relates Gtk::Toolbar
+	 */
+	Wnck::Tasklist* wrap(WnckTasklist* object, bool take_copy = false);
+} //namespace Glib
+
+
+
+
 
 #endif // _WNCK_TASKLIST_H_
 

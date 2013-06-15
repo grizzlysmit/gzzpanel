@@ -26,7 +26,9 @@
 #include <cstdlib>
 #include <vector>
 #include "wnck-pager.h"
-#include "taskbar.h"
+//#include "taskbar.h"
+#include "wnck-screen.h"
+#include "wnck-tasklist.h"
 
 class Main_window: public Gtk::Window 
 {
@@ -45,8 +47,9 @@ class Main_window: public Gtk::Window
 		Gtk::Label *m_labelDate;
 		Gtk::Box *m_boxDeskTop;
 		Wnck::Pager *m_pagerDeskTop;
-		Taskbar *m_buttonboxTaskBar;
-		//Wnck::Tasklist *m_taskbar;
+		//Taskbar *m_buttonboxTaskBar;
+		Gtk::Box *m_boxTaskBar;
+		Wnck::Tasklist *m_taskbar;
 
 		//std::vector<Gtk::Button*> DesktopButtons;
 		//std::vector<Gtk::DrawingArea*> DesktopDrawingAreas;
@@ -61,6 +64,9 @@ class Main_window: public Gtk::Window
 		// virtual destop stuff //
 		int m_desktop_rows;
 		int m_desktop_cols;
+		Glib::RefPtr<Gdk::Screen> m_refscreen;
+		Wnck::Screen *m_wnck_screen;
+		unsigned long long m_counter;
 		
 		// a time out handler  //
 		bool on_timeout();
@@ -70,6 +76,8 @@ class Main_window: public Gtk::Window
 		void on_menuitem_Exit();
 		void on_popup_menu_position(int& x, int& y, bool& push_in);
 		GdkPixbuf* on_load_icon(const Glib::ustring& icon_name, int size, unsigned flags);
+		void on_window_mapped();
+		void on_allocate(Gtk::Allocation& allocation);
 
 		// ancillary //
 		void setup_desktops();

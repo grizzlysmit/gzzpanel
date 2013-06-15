@@ -72,7 +72,7 @@ am_gzzpanel_OBJECTS = gzzpanel-main.$(OBJEXT) \
 	gzzpanel-wnck-window.$(OBJEXT) \
 	gzzpanel-wnck-workspace.$(OBJEXT) \
 	gzzpanel-wnck-application.$(OBJEXT) \
-	gzzpanel-wnck-class-group.$(OBJEXT)
+	gzzpanel-wnck-class-group.$(OBJEXT) gzzpanel-applet.$(OBJEXT)
 gzzpanel_OBJECTS = $(am_gzzpanel_OBJECTS)
 am__DEPENDENCIES_1 =
 gzzpanel_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -358,7 +358,11 @@ gzzpanel_SOURCES = \
 	wnck-application.cc \
 	wnck-application.h \
 	wnck-class-group.cc \
-	wnck-class-group.h
+	wnck-class-group.h \
+	private/wnck-tasklist_p.h \
+	private.h \
+	applet.cc \
+	applet.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 gzzpanel_LDFLAGS = \
@@ -457,6 +461,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-applet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-mainwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-task.Po@am__quote@
@@ -643,6 +648,20 @@ gzzpanel-wnck-class-group.obj: wnck-class-group.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-class-group.cc' object='gzzpanel-wnck-class-group.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-class-group.obj `if test -f 'wnck-class-group.cc'; then $(CYGPATH_W) 'wnck-class-group.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-class-group.cc'; fi`
+
+gzzpanel-applet.o: applet.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-applet.o -MD -MP -MF $(DEPDIR)/gzzpanel-applet.Tpo -c -o gzzpanel-applet.o `test -f 'applet.cc' || echo '$(srcdir)/'`applet.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-applet.Tpo $(DEPDIR)/gzzpanel-applet.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='applet.cc' object='gzzpanel-applet.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-applet.o `test -f 'applet.cc' || echo '$(srcdir)/'`applet.cc
+
+gzzpanel-applet.obj: applet.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-applet.obj -MD -MP -MF $(DEPDIR)/gzzpanel-applet.Tpo -c -o gzzpanel-applet.obj `if test -f 'applet.cc'; then $(CYGPATH_W) 'applet.cc'; else $(CYGPATH_W) '$(srcdir)/applet.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-applet.Tpo $(DEPDIR)/gzzpanel-applet.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='applet.cc' object='gzzpanel-applet.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-applet.obj `if test -f 'applet.cc'; then $(CYGPATH_W) 'applet.cc'; else $(CYGPATH_W) '$(srcdir)/applet.cc'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

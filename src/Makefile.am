@@ -47,7 +47,11 @@ gzzpanel_SOURCES = \
 	wnck-application.cc \
 	wnck-application.h \
 	wnck-class-group.cc \
-	wnck-class-group.h
+	wnck-class-group.h \
+	private/wnck-tasklist_p.h \
+	private.h \
+	applet.cc \
+	applet.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 
