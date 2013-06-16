@@ -51,7 +51,9 @@ gzzpanel_SOURCES = \
 	private/wnck-tasklist_p.h \
 	private.h \
 	applet.cc \
-	applet.h
+	applet.h \
+	prefs.cc \
+	prefs.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 

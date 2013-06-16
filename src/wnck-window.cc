@@ -137,6 +137,165 @@ namespace Wnck {
 		// returns NULL if there is no class instance //
 		return wnck_window_get_class_instance_name(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
 	}
+
+	const Glib::ustring Window::get_session_id() const
+	{
+		Glib::ustring result;
+		const char *id = wnck_window_get_session_id(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+		if(id) result = id;
+		return result;
+	}
+
+	const Glib::ustring Window::get_session_id_utf8() const
+	{
+		Glib::ustring result;
+		const char *id = wnck_window_get_session_id_utf8(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+		if(id) result = id;
+		return result;
+	}
+
+    int Window::get_pid()
+	{
+		return wnck_window_get_pid(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+
+	gint Window::get_sort_order() const
+	{
+		return wnck_window_get_sort_order(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	void Window::set_sort_order(gint order)
+	{
+		wnck_window_set_sort_order(reinterpret_cast<WnckWindow*>(gobj()), order);
+	}
+
+	Window::Type Window::get_window_type() const
+	{
+		return static_cast<Type>(wnck_window_get_window_type(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj()))));
+	}
+
+	void Window::set_window_type(Type wintype)
+	{
+		wnck_window_set_window_type(reinterpret_cast<WnckWindow*>(gobj()), static_cast<WnckWindowType>(wintype));
+	}
+
+	Window::State Window::get_state() const
+	{
+		return static_cast<State>(wnck_window_get_state(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj()))));
+	}
+
+	bool Window::is_minimized() const
+	{
+		return wnck_window_is_minimized(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_maximized_horizontally() const
+	{
+		return wnck_window_is_maximized_horizontally(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_maximized_vertically() const
+	{
+		return wnck_window_is_maximized_vertically(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_maximized() const
+	{
+		return wnck_window_is_maximized(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_shaded() const
+	{
+		return wnck_window_is_shaded(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_pinned() const
+	{
+		return wnck_window_is_pinned(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_sticky() const
+	{
+		return wnck_window_is_sticky(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_above() const
+	{
+		return wnck_window_is_above(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_below() const
+	{
+		return wnck_window_is_below(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_skip_pager() const
+	{
+		return wnck_window_is_skip_pager(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_skip_tasklist() const
+	{
+		return wnck_window_is_skip_tasklist(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::is_fullscreen() const
+	{
+		return wnck_window_is_fullscreen(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::needs_attention() const
+	{
+		return wnck_window_needs_attention(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	bool Window::self_or_transient_needs_attention() const
+	{
+		return wnck_window_or_transient_needs_attention(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj())));
+	}
+
+	Window::Actions Window::get_actions() const
+	{
+		return static_cast<Actions>(wnck_window_get_actions(const_cast<WnckWindow*>(reinterpret_cast<const WnckWindow*>(gobj()))));
+	}
+
+	void Window::minimize()
+	{
+		wnck_window_minimize(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+
+	void Window::unminimize(guint32 timestamp)
+	{
+		wnck_window_unminimize(reinterpret_cast<WnckWindow*>(gobj()),  timestamp);
+	}
+
+	void Window::maximize_horizontally()
+	{
+		wnck_window_maximize_horizontally(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+
+	void Window::unmaximize_horizontally()
+	{
+		wnck_window_unmaximize_horizontally(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+
+	void Window::maximize_vertically()
+	{
+		wnck_window_maximize_vertically(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+
+	void Window::unmaximize_vertically()
+	{
+		wnck_window_unmaximize_vertically(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+
+	void Window::maximize()
+	{
+		wnck_window_maximize(reinterpret_cast<WnckWindow*>(gobj()));
+	}
+	
+
+	
 	
 }; //  namespace Wnck  //
 

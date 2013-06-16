@@ -24,7 +24,9 @@
 Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject), m_builder(builder), m_buttonMenu(0), m_menuPanel(0), 
     m_imagemenuitemExit(0), m_labelClock(0), m_labelDate(0), m_boxDeskTop(0), 
-    m_pagerDeskTop(0), m_boxTaskBar(0), m_taskbar(0), m_icontheme(Gtk::IconTheme::get_default()), 
+    m_pagerDeskTop(0), m_boxTaskBar(0), m_taskbar(0), m_imagemenuitemUnity(0), 
+    m_imagemenuitemCompiz(0), m_imagemenuitemPreferences(0), m_dialogPreferences(0), 
+    m_icontheme(Gtk::IconTheme::get_default()), 
     m_clockformat("%Y-%m-%d %H:%M:%S"), m_dateformat("%A %d %B"), m_refscreen(get_screen()), 
     m_wnck_screen(new Wnck::Screen), 
     m_counter(0)
@@ -43,6 +45,21 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	m_builder->get_widget("imagemenuitemExit", m_imagemenuitemExit);
 	if(m_imagemenuitemExit){
 		m_imagemenuitemExit->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Exit) );
+	}
+	// m_imagemenuitemUnity //
+	m_builder->get_widget("imagemenuitemUnity", m_imagemenuitemUnity);
+	if(m_imagemenuitemUnity){
+		m_imagemenuitemUnity->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Unity) );
+	}
+	// m_imagemenuitemCompiz //
+	m_builder->get_widget("imagemenuitemCompiz", m_imagemenuitemCompiz);
+	if(m_imagemenuitemCompiz){
+		m_imagemenuitemCompiz->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Compiz) );
+	}
+	// m_imagemenuitemPreferences //
+	m_builder->get_widget("imagemenuitemPreferences", m_imagemenuitemPreferences);
+	if(m_imagemenuitemPreferences){
+		m_imagemenuitemPreferences->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Prefrences) );
 	}
 
 	// m_labelClock //
@@ -77,19 +94,23 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		m_taskbar->signal_allocation().connect( sigc::mem_fun(*this, &Main_window::on_allocate) );
 		m_taskbar->set_include_all_workspaces(false);
 		m_taskbar->set_grouping(Wnck::Tasklist::AUTO_GROUP);
-		m_taskbar->set_grouping_limit(4);
+		//m_taskbar->set_grouping_limit(4);
 		m_taskbar->set_button_relief(Gtk::RELIEF_NORMAL);
+		//Glib::ustring data = "WnckTasklist {color: #ff0000;font: Lucida Grande 6}";
+		Glib::ustring data = "GtkWindow {color: #ff0000;font: Lucida Grande 8}";
+		auto css = Gtk::CssProvider::create();
+		if(not css->load_from_data(data)) {
+			std::cerr << "Failed to load css" << std::endl;
+			std::exit(1);
+		}
+		//auto screen = Gdk::Screen::get_default();
+		//auto ctx = m_taskbar->get_style_context();
+		auto ctx = get_style_context();
+		ctx->add_provider_for_screen(m_refscreen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+		m_boxTaskBar->override_font(Pango::FontDescription("[Lucida Grande][bold Red][10]"));
 		m_boxTaskBar->pack_start(*m_taskbar, true, true, 0);
 		std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() == " << m_refscreen->get_width() << std::endl;
 		std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() - 2024 == " << m_refscreen->get_width() - 2024 << std::endl;
-		std::vector<int> vec = m_taskbar->get_size_hint_list();
-		int total = 0;
-		std::cout << "{ " << std::flush;
-		for(auto e : vec){
-			std::cout << e << ", " << std::flush;
-			total += e;
-		}
-		std::cout << '}' << std::endl << "total == " << total << std::endl;
 		m_boxTaskBar->set_size_request(m_refscreen->get_width() - 2024, 36); // try and force it //
 		m_taskbar->set_size_request(m_refscreen->get_width() - 2028, 36);     // try and force it //
 		Gdk::Geometry geom;
@@ -104,6 +125,20 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		geom.win_gravity = GDK_GRAVITY_NORTH_WEST;
 		set_geometry_hints(*m_boxTaskBar, geom, Gdk::HINT_MAX_SIZE /*| Gdk::HINT_MIN_SIZE*/);
 		m_taskbar->show();
+		std::vector<int> vec = m_taskbar->get_size_hint_list();
+		int total = 0;
+		std::cout << "{ " << std::flush;
+		for(auto e : vec){
+			std::cout << e << ", " << std::flush;
+			total += e;
+		}
+		std::cout << '}' << std::endl << "total == " << total << std::endl;
+	}
+
+	// m_dialogPreferences //
+	m_builder->get_widget_derived("dialogPreferences", m_dialogPreferences);
+	if(m_dialogPreferences){
+		//m_dialogPreferences->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Exit) );
 	}
 
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_DOCK);
@@ -214,6 +249,37 @@ GdkPixbuf* Main_window::on_load_icon(const Glib::ustring& icon_name, int size, u
 	}
 	return m_icontheme->load_icon(icon_name, size, static_cast<Gtk::IconLookupFlags>(0))->gobj();
 }
+
+void Main_window::on_menuitem_Unity()
+{
+	system("/usr/bin/unity&");
+}
+
+void Main_window::on_menuitem_Compiz()
+{
+	system("/usr/bin/compiz --replace&");
+}
+
+void Main_window::on_menuitem_Prefrences()
+{
+	//m_dialogPreferences->set_use_font(true);
+	int res = m_dialogPreferences->run();
+	m_dialogPreferences->hide();
+	if(res){
+		Glib::ustring fontname = m_dialogPreferences->get_font_name();
+		std::cout << "Ok clicked. fontname == " << fontname << std::endl;
+		Pango::FontDescription fd(pango_font_description_from_string(fontname.c_str()));
+		std::cout << "Ok clicked. fontname == " << fontname << std::endl;
+		std::cout << "Ok clicked. fd.get_family() == " << fd.get_family() << std::endl;
+		std::cout << "Ok clicked. fd.get_style() == " << fd.get_style() << std::endl;
+		std::cout << "Ok clicked. fd.to_string() == " << fd.to_string() << std::endl;
+		std::cout << "Ok clicked. fd.get_size() == " << fd.get_size()/1000 << std::endl;
+		m_taskbar->override_font(fd);
+	}else{
+		std::cout << "Cancel clicked." << std::endl;
+	}
+}
+
 
 
 

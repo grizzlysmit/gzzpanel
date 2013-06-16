@@ -26,19 +26,23 @@
 #include <cstdlib>
 #include <vector>
 #include "task.h"
+#include "applet.h"
 
-class Taskbar : public Gtk::ButtonBox 
-{
-	public:
-		Taskbar(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-		~Taskbar();
+namespace gzz {
 
-	protected:
-		const Glib::RefPtr<Gtk::Builder>& m_builder;
+	class Taskbar : public Gtk::ButtonBox, public Applet 
+	{
+		public:
+			Taskbar(Gtk::Orientation orientation = Gtk::ORIENTATION_HORIZONTAL);
+			~Taskbar();
 
-	private:
-		
-};
+		protected:
+
+		private:
+
+	};
+	
+}; // namespace gzz //
 
 #endif // _TASKBAR_H_
 

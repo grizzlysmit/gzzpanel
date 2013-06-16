@@ -72,7 +72,8 @@ am_gzzpanel_OBJECTS = gzzpanel-main.$(OBJEXT) \
 	gzzpanel-wnck-window.$(OBJEXT) \
 	gzzpanel-wnck-workspace.$(OBJEXT) \
 	gzzpanel-wnck-application.$(OBJEXT) \
-	gzzpanel-wnck-class-group.$(OBJEXT) gzzpanel-applet.$(OBJEXT)
+	gzzpanel-wnck-class-group.$(OBJEXT) gzzpanel-applet.$(OBJEXT) \
+	gzzpanel-prefs.$(OBJEXT)
 gzzpanel_OBJECTS = $(am_gzzpanel_OBJECTS)
 am__DEPENDENCIES_1 =
 gzzpanel_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -362,7 +363,9 @@ gzzpanel_SOURCES = \
 	private/wnck-tasklist_p.h \
 	private.h \
 	applet.cc \
-	applet.h
+	applet.h \
+	prefs.cc \
+	prefs.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 gzzpanel_LDFLAGS = \
@@ -464,6 +467,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-applet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-mainwindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-prefs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-task.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-taskbar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-application.Po@am__quote@
@@ -662,6 +666,20 @@ gzzpanel-applet.obj: applet.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='applet.cc' object='gzzpanel-applet.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-applet.obj `if test -f 'applet.cc'; then $(CYGPATH_W) 'applet.cc'; else $(CYGPATH_W) '$(srcdir)/applet.cc'; fi`
+
+gzzpanel-prefs.o: prefs.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-prefs.o -MD -MP -MF $(DEPDIR)/gzzpanel-prefs.Tpo -c -o gzzpanel-prefs.o `test -f 'prefs.cc' || echo '$(srcdir)/'`prefs.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-prefs.Tpo $(DEPDIR)/gzzpanel-prefs.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='prefs.cc' object='gzzpanel-prefs.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-prefs.o `test -f 'prefs.cc' || echo '$(srcdir)/'`prefs.cc
+
+gzzpanel-prefs.obj: prefs.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-prefs.obj -MD -MP -MF $(DEPDIR)/gzzpanel-prefs.Tpo -c -o gzzpanel-prefs.obj `if test -f 'prefs.cc'; then $(CYGPATH_W) 'prefs.cc'; else $(CYGPATH_W) '$(srcdir)/prefs.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-prefs.Tpo $(DEPDIR)/gzzpanel-prefs.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='prefs.cc' object='gzzpanel-prefs.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-prefs.obj `if test -f 'prefs.cc'; then $(CYGPATH_W) 'prefs.cc'; else $(CYGPATH_W) '$(srcdir)/prefs.cc'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -19,16 +19,17 @@
 
 #include "taskbar.h"
 
+namespace gzz {
 
-Taskbar::Taskbar(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
-  : Gtk::ButtonBox(cobject), m_builder(builder)
-{
-}
+	Taskbar::Taskbar(Gtk::Orientation orientation/* = Gtk::ORIENTATION_HORIZONTAL*/)
+		: Gtk::ButtonBox(orientation), Applet()
+	{
+	}
 
-Taskbar::~Taskbar()
-{
-}
+	Taskbar::~Taskbar()
+	{
+	}
+	
 
-
-
+}; // namespace gzz //
 

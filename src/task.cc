@@ -19,26 +19,27 @@
 
 #include "task.h"
 
+namespace gzz {
 
-Task::Task()
-  : Gtk::Button()
-{
-}
-
-Task::~Task()
-{
-}
-
-bool Task::on_button_press_event(GdkEventButton *event)
-{
-	if(event->button == 3 && event->type == GDK_BUTTON_PRESS){
-		return m_signal_right_clicked.emit();
+	Task::Task()
+		: Gtk::Button()
+	{
 	}
-	return Gtk::Button::on_button_press_event(event);
-}
 
+	Task::~Task()
+	{
+	}
 
+	bool Task::on_button_press_event(GdkEventButton *event)
+	{
+		if(event->button == 3 && event->type == GDK_BUTTON_PRESS){
+			return m_signal_right_clicked.emit();
+		}
+		return Gtk::Button::on_button_press_event(event);
+	}
 
+	
 
+}; // namespace gzz //
 
 

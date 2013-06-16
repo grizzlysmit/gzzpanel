@@ -17,35 +17,29 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _TASK_H_
-#define _TASK_H_
-#include <gtkmm.h>
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <cstdlib>
-#include <vector>
+#include "prefs.h"
 
-namespace gzz {
+Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+  : Gtk::Dialog(cobject), m_builder(builder), 
+    m_fontbuttonPrefesGlobal(0) 
+{
+	// m_fontbuttonPrefesGlobal //
+	m_builder->get_widget("fontbuttonPrefesGlobal", m_fontbuttonPrefesGlobal);
+	if(m_fontbuttonPrefesGlobal){
+		//m_fontbuttonPrefesGlobal->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+		m_fontbuttonPrefesGlobal->set_use_font(true);
+	}
+}
 
-	class Task : public Gtk::Button 
-	{
-		public:
-			typedef sigc::signal<bool> type_signal_right_clicked;
+Prefs::~Prefs()
+{
+}
 
-			Task();
-			~Task();
+Glib::ustring Prefs::get_font_name() const
+{
+	return m_fontbuttonPrefesGlobal->get_font_name();
+}
 
-			type_signal_right_clicked signal_right_clicked();
-		protected:
-			type_signal_right_clicked m_signal_right_clicked;
 
-			virtual bool on_button_press_event(GdkEventButton *event);
-		private:
 
-	};
-
-}; // namespace gzz //
-
-#endif // _TASK_H_
 

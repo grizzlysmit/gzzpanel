@@ -18,28 +18,69 @@
  */
 
 #include "applet.h"
+#include <boost/format.hpp>
+#include <limits>       // std::numeric_limits
 
 namespace gzz{
 
 	Applet::Applet()
+		: m_max_width(std::numeric_limits<int>::max()), 
+	      m_max_height(std::numeric_limits<int>::max())
+	{
+	}
+	
+	Applet::~Applet()
 	{
 	}
 
-	Applet::Applet(Glib::ustring _name)
-		: m_name(_name)
+	std::istream& Applet::xml_params_in(std::istringstream& in)
 	{
+		// TODO put something here //
 	}
-
-	std::istream& Applet::xml_in(std::istream& in, Applet& value)
+	
+	std::istream& Applet::xml_body_in(std::istringstream& in)
 	{
 		// TODO put something here //
 	}
 
-	std::ostream& Applet::xml_out(std::ostream& out, const Glib::ustring indentation)
+	std::ostream& Applet::xml_params_out(std::ostream& out, bool &body_following)
 	{
-		out << '<' << m_name << " />" << std::endl;
+		body_following = false;
+		out << "" << std::endl;
+		return out;
 	}
 
+	Glib::ustring Applet::xml_body_out()
+	{
+		/*boost::format bf("<font>\n    <size>%d</size>\n    <style>%s</style>\n</font>");
+		bf % m_fontsize % fontstyle.to_string();*/
+		return "";
+	}
 
+	int Applet::get_max_width()
+	{
+		return m_max_width;
+	}
+
+	void Applet::set_max_width(int wid)
+	{
+		if(wid > 0){
+			m_max_width = wid;
+		}
+	}
+	
+	int Applet::get_max_height()
+	{
+		return m_max_height;
+	}
+	
+	void Applet::set_max_height(int hght)
+	{
+		if(hght > 0){
+			m_max_height = hght;
+		}
+	}
+	
+	
 }; // namespace gzz //
 
