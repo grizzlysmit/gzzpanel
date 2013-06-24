@@ -34,6 +34,11 @@ namespace Wnck {
 	class ClassGroup : public Glib::Object 
 	{
 		public:
+			typedef ClassGroup CppObjectType;
+			typedef ClassGroup_Class CppClassType;
+			typedef WnckClassGroup BaseObjectType;
+			typedef WnckClassGroupClass BaseClassType;
+
 			ClassGroup(WnckClassGroup *cg);
 			ClassGroup(const Glib::ustring &id);
 			~ClassGroup();
@@ -55,8 +60,11 @@ namespace Wnck {
 			Glib::SignalProxy0<void> signal_icon_changed();
 			Glib::SignalProxy0<void> signal_name_changed();
 		protected:
+			void on_icon_changed();
+			void on_name_changed();
 
 		private:
+			friend class ClassGroup_Class;
 
 	};
 	
@@ -72,7 +80,7 @@ namespace Glib
 	 *
 	 * @relates Gtk::AboutDialog
 	 */
-	Wnck::ClassGroup* wrap(WnckClassGroup* object/*, bool take_copy = false*/);
+	Wnck::ClassGroup* wrap(WnckClassGroup* object, bool take_copy = false);
 	
 } // namespace Glib //
 

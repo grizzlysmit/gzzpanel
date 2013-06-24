@@ -34,6 +34,11 @@ namespace Wnck {
 	class Application : public Glib::Object 
 	{
 		public:
+			typedef Application CppObjectType;
+			typedef Application_Class CppClassType;
+			typedef WnckApplication BaseObjectType;
+			typedef WnckApplicationClass BaseClassType;
+
 			Application(WnckApplication* app);
 			Application(gulong xwindow);
 			~Application();
@@ -58,8 +63,11 @@ namespace Wnck {
 			Glib::SignalProxy0<void> signal_icon_changed();
 			Glib::SignalProxy0<void> signal_name_changed();
 		protected:
+			void on_name_changed();
+			void on_icon_changed();
 
 		private:
+			friend class Application_Class;
 
 	};
 	
@@ -75,7 +83,7 @@ namespace Glib
 	 *
 	 * @relates Gtk::AboutDialog
 	 */
-	Wnck::Application* wrap(WnckApplication* object/*, bool take_copy = false*/);
+	Wnck::Application* wrap(WnckApplication* object, bool take_copy = false);
 
 } // namespace Glib //
 

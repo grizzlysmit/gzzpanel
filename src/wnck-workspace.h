@@ -34,6 +34,11 @@ namespace Wnck {
 	class Workspace: public Glib::Object 
 	{
 		public:
+			typedef Workspace CppObjectType;
+			typedef Workspace_Class CppClassType;
+			typedef WnckWorkspace BaseObjectType;
+			typedef WnckWorkspaceClass BaseClassType;
+			
 			enum MotionDirection {
 				MOTION_UP = WNCK_MOTION_UP,
 				MOTION_DOWN = WNCK_MOTION_DOWN,
@@ -66,8 +71,10 @@ namespace Wnck {
 			void activate(guint32 timestamp);
 			Glib::SignalProxy1<void, Workspace*> signal_name_changed();
 		protected:
+			void on_name_changed();
 
 		private:
+			friend class Workspace_Class;
 
 	};
 	

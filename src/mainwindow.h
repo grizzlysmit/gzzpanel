@@ -28,8 +28,9 @@
 #include "wnck-pager.h"
 //#include "taskbar.h"
 #include "wnck-screen.h"
-#include "wnck-tasklist.h"
+//#include "wnck-tasklist.h"
 #include "prefs.h"
+#include "taskbar.h"
 
 class Main_window: public Gtk::Window 
 {
@@ -50,7 +51,7 @@ class Main_window: public Gtk::Window
 		Wnck::Pager *m_pagerDeskTop;
 		//Taskbar *m_buttonboxTaskBar;
 		Gtk::Box *m_boxTaskBar;
-		Wnck::Tasklist *m_taskbar;
+		gzz::Taskbar *m_taskbar;
 		Gtk::ImageMenuItem *m_imagemenuitemUnity;
 		Gtk::ImageMenuItem *m_imagemenuitemCompiz;
 		Gtk::ImageMenuItem *m_imagemenuitemPreferences;

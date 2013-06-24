@@ -20,12 +20,13 @@
 #include "mainwindow.h"
 #include <ctime>       /* time_t, struct tm, time, localtime, strftime */
 #include <boost/filesystem.hpp>
+#include <gdk/gdkx.h>
 
 Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
-  : Gtk::Window(cobject), m_builder(builder), m_buttonMenu(0), m_menuPanel(0), 
-    m_imagemenuitemExit(0), m_labelClock(0), m_labelDate(0), m_boxDeskTop(0), 
-    m_pagerDeskTop(0), m_boxTaskBar(0), m_taskbar(0), m_imagemenuitemUnity(0), 
-    m_imagemenuitemCompiz(0), m_imagemenuitemPreferences(0), m_dialogPreferences(0), 
+  : Gtk::Window(cobject), m_builder(builder), m_buttonMenu(nullptr), m_menuPanel(nullptr), 
+    m_imagemenuitemExit(nullptr), m_labelClock(nullptr), m_labelDate(nullptr), m_boxDeskTop(nullptr), 
+    m_pagerDeskTop(nullptr), m_boxTaskBar(nullptr), m_taskbar(nullptr), m_imagemenuitemUnity(nullptr), 
+    m_imagemenuitemCompiz(nullptr), m_imagemenuitemPreferences(nullptr), m_dialogPreferences(nullptr), 
     m_icontheme(Gtk::IconTheme::get_default()), 
     m_clockformat("%Y-%m-%d %H:%M:%S"), m_dateformat("%A %d %B"), m_refscreen(get_screen()), 
     m_wnck_screen(new Wnck::Screen), 
@@ -89,13 +90,13 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	if(m_boxTaskBar){
 		//m_boxTaskBar->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Exit) );
 		m_wnck_screen->force_update();
-		m_taskbar = Gtk::manage(new Wnck::Tasklist());
-		m_taskbar->signal_load_icon().connect( sigc::mem_fun(*this, &Main_window::on_load_icon) );
+		m_taskbar = Gtk::manage(new gzz::Taskbar(*m_wnck_screen));
+		/*m_taskbar->signal_load_icon().connect( sigc::mem_fun(*this, &Main_window::on_load_icon) );
 		m_taskbar->signal_allocation().connect( sigc::mem_fun(*this, &Main_window::on_allocate) );
 		m_taskbar->set_include_all_workspaces(false);
-		m_taskbar->set_grouping(Wnck::Tasklist::AUTO_GROUP);
+		m_taskbar->set_grouping(Wnck::Tasklist::AUTO_GROUP);*/
 		//m_taskbar->set_grouping_limit(4);
-		m_taskbar->set_button_relief(Gtk::RELIEF_NORMAL);
+		//m_taskbar->set_button_relief(Gtk::RELIEF_NORMAL);
 		//Glib::ustring data = "WnckTasklist {color: #ff0000;font: Lucida Grande 6}";
 		Glib::ustring data = "GtkWindow {color: #ff0000;font: Lucida Grande 8}";
 		auto css = Gtk::CssProvider::create();
@@ -125,14 +126,14 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		geom.win_gravity = GDK_GRAVITY_NORTH_WEST;
 		set_geometry_hints(*m_boxTaskBar, geom, Gdk::HINT_MAX_SIZE /*| Gdk::HINT_MIN_SIZE*/);
 		m_taskbar->show();
-		std::vector<int> vec = m_taskbar->get_size_hint_list();
+		/*std::vector<int> vec = m_taskbar->get_size_hint_list();
 		int total = 0;
 		std::cout << "{ " << std::flush;
 		for(auto e : vec){
 			std::cout << e << ", " << std::flush;
 			total += e;
 		}
-		std::cout << '}' << std::endl << "total == " << total << std::endl;
+		std::cout << '}' << std::endl << "total == " << total << std::endl;*/
 	}
 
 	// m_dialogPreferences //
@@ -146,7 +147,7 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	resize(m_refscreen->get_width() - 49, 38);
 	set_size_request(m_refscreen->get_width() - 49, 38); // try and force it //
 	move(49, m_refscreen->get_height() - 40);
-	set_opacity(0.85);
+	set_opacity(0.90);
 	set_keep_above(true);
 	m_conn = Glib::signal_timeout().connect(sigc::mem_fun(*this, &Main_window::on_timeout), 100);
 	stick(); // make it sticky //
@@ -168,6 +169,11 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	set_geometry_hints(*m_taskbar, geom, Gdk::HINT_MAX_SIZE | Gdk::HINT_MIN_SIZE);
 	resize(m_refscreen->get_width() - 49, 38);
 	move(49, m_refscreen->get_height() - 50);
+	gint32 data[4] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + 5};
+	wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
+	gdk_property_change(get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data), sizeof(gint32)*4);
+	gint32 data2[12] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + 5, 0, 0, 0, 0, 0, 0, 49, m_refscreen->get_width()};
+	gdk_property_change(get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT_PARTIAL")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data2), sizeof(gint32)*12);
 }
 
 Main_window::~Main_window()
@@ -215,12 +221,13 @@ bool Main_window::on_timeout()
 	char buffer[80];
 
 	time (&rawtime);
-	timeinfo = localtime (&rawtime);
+	timeinfo = localtime(&rawtime);
 
-	strftime (buffer, 80, m_clockformat.c_str(), timeinfo);
+	strftime(buffer, 80, m_clockformat.c_str(), timeinfo);
 	m_labelClock->set_text(buffer);
-	strftime (buffer, 80, m_dateformat.c_str(), timeinfo);
+	strftime(buffer, 80, m_dateformat.c_str(), timeinfo);
 	m_labelDate->set_text(buffer);
+	m_taskbar->refreshbar();
 	return true;
 }
 

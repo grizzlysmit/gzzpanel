@@ -53,7 +53,16 @@ gzzpanel_SOURCES = \
 	applet.cc \
 	applet.h \
 	prefs.cc \
-	prefs.h
+	prefs.h \
+	private/wnck-screen_p.h \
+	private/wnck-window_p.h \
+	private/wnck-workspace_p.h \
+	private/wnck-application_p.h \
+	private/wnck-class-group_p.h \
+	wrap_init.h \
+	wrap_init.cc \
+	wnck-action-menu.cc \
+	wnck-action-menu.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 

@@ -18,6 +18,7 @@
  */
 
 #include "wnck-workspace.h"
+#include "private/wnck-workspace_p.h"
 
 namespace Wnck {
 
@@ -95,6 +96,19 @@ namespace Wnck {
 		wnck_workspace_activate(reinterpret_cast<WnckWorkspace*>(gobj()), timestamp);
 	}
 
+	void Workspace::on_name_changed()
+	{
+		BaseClassType *const base = static_cast<BaseClassType*>(
+		                                                        g_type_class_peek_parent(G_OBJECT_GET_CLASS(gobject_)) // Get the parent class of the object class (The original underlying C class).
+		                                                        );
+
+		if(base && base->name_changed)
+			(*base->name_changed)(gobj());
+		
+	}
+
+
+	
 }; // namespace Wnck //
 
 namespace {
@@ -124,7 +138,7 @@ namespace {
 
 	static const Glib::SignalProxyInfo Workspace_signal_name_changed_info =
 	{
-		"name_changed",
+		"name-changed",
 		(GCallback) &Workspace_signal_name_changed_callback,
 		(GCallback) &Workspace_signal_name_changed_callback
 	};
@@ -152,5 +166,109 @@ namespace Glib
 	}
 
 } // namespace Glib //
+
+
+
+namespace Wnck {
+
+
+	/* The *_Class implementation: */
+
+	const Glib::Class& Workspace_Class::init()
+	{
+		if(!gtype_) // create the GType if necessary
+		{
+			// Glib::Class has to know the class init function to clone custom types.
+			class_init_func_ = &Workspace_Class::class_init_function;
+
+			// This is actually just optimized away, apparently with no harm.
+			// Make sure that the parent type has been created.
+			//CppClassParent::CppObjectType::get_type();
+
+			// Create the wrapper type, with the same class/instance size as the base type.
+			register_derived_type(wnck_workspace_get_type());
+
+			// Add derived versions of interfaces, if the C type implements any interfaces:
+
+		}
+
+		return *this;
+	}
+
+
+	void Workspace_Class::class_init_function(void* g_class, void* class_data)
+	{
+		BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
+		CppClassParent::class_init_function(klass, class_data);
+
+		//reinterpret_cast<GObjectClass*>(klass)->dispose = &dispose_vfunc_callback;
+
+		klass->name_changed = &name_changed_callback;
+	}
+
+
+	void Workspace_Class::name_changed_callback(WnckWorkspace* self)
+	{
+		Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(Glib::ObjectBase::_get_current_wrapper((GObject*)self));
+
+		// Non-gtkmmproc-generated custom classes implicitly call the default
+		// Glib::ObjectBase constructor, which sets is_derived_. But gtkmmproc-
+		// generated classes can use this optimisation, which avoids the unnecessary
+		// parameter conversions if there is no possibility of the virtual function
+		// being overridden:
+		if(obj_base && obj_base->is_derived_())
+		{
+			CppObjectType *const obj = dynamic_cast<CppObjectType* const>(obj_base);
+			if(obj) // This can be NULL during destruction.
+			{
+#ifdef GLIBMM_EXCEPTIONS_ENABLED
+				try // Trap C++ exceptions which would normally be lost because this is a C callback.
+				{
+#endif //GLIBMM_EXCEPTIONS_ENABLED
+					// Call the virtual member method, which derived classes might override.
+					obj->on_name_changed();
+					return;
+#ifdef GLIBMM_EXCEPTIONS_ENABLED
+				}
+				catch(...)
+				{
+					Glib::exception_handlers_invoke();
+				}
+#endif //GLIBMM_EXCEPTIONS_ENABLED
+			}
+		}
+
+		BaseClassType *const base = static_cast<BaseClassType*>(
+		                                                        g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
+		                                                        );
+
+		// Call the original underlying C function:
+		if(base && base->name_changed)
+			(*base->name_changed)(self);
+	}
+
+
+	Glib::ObjectBase* Workspace_Class::wrap_new(GObject* object)
+	{
+		return new Workspace((WnckWorkspace*)object);
+	}
+
+	
+
+	
+	
+}; // namespace Wnck //
+
+
+
+
+
+
+
+
+
+
+
+
 
 

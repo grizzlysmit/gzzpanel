@@ -27,6 +27,7 @@
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #endif
+#include "wrap_init.h"
 
 
 
@@ -35,10 +36,12 @@
 #define UI_FILE "src/gzzpanel.ui"
 
    
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	Gtk::Main kit(argc, argv);
+	Wnck::wrap_init();
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+        		  << " after Wnck::wrap_init() " << std::endl;
 
 
 	//Load the Glade file and instiate its widgets:
@@ -53,7 +56,7 @@ main (int argc, char *argv[])
 		return 1;
 	}
 	//Gtk::Window* main_win = 0;
-	Main_window* main_win = 0;
+	Main_window* main_win = nullptr;
 	//builder->get_widget("main_window", main_win);
 	builder->get_widget_derived("main_window", main_win);
 

@@ -30,13 +30,19 @@
 #include "wnck-application.h"
 #include "wnck-class-group.h"
 #include "common.h"
+#include "wnck-workspace.h"
 
 namespace Wnck {
 
 	class Window : public Glib::Object 
 	{
 		public:
-			enum Type {
+			typedef Window CppObjectType;
+			typedef Window_Class CppClassType;
+			typedef WnckWindow BaseObjectType;
+			typedef WnckWindowClass BaseClassType;
+			
+			enum class Type {
 				NORMAL       = WNCK_WINDOW_NORMAL,       /* document/app window */
 				DESKTOP      = WNCK_WINDOW_DESKTOP,      /* desktop background */
 				DOCK         = WNCK_WINDOW_DOCK,         /* panel */
@@ -47,44 +53,76 @@ namespace Wnck {
 				SPLASHSCREEN = WNCK_WINDOW_SPLASHSCREEN  /* splash screen */
 			};
 
-			enum State {
-				STATE_MINIMIZED              = WNCK_WINDOW_STATE_MINIMIZED,
-				STATE_MAXIMIZED_HORIZONTALLY = WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY,
-				STATE_MAXIMIZED_VERTICALLY   = WNCK_WINDOW_STATE_MAXIMIZED_VERTICALLY,
-				STATE_SHADED                 = WNCK_WINDOW_STATE_SHADED,
-				STATE_SKIP_PAGER             = WNCK_WINDOW_STATE_SKIP_PAGER,
-				STATE_SKIP_TASKLIST          = WNCK_WINDOW_STATE_SKIP_TASKLIST,
-				STATE_STICKY                 = WNCK_WINDOW_STATE_STICKY,
-				STATE_HIDDEN                 = WNCK_WINDOW_STATE_HIDDEN,
-				STATE_FULLSCREEN             = WNCK_WINDOW_STATE_FULLSCREEN,
-				STATE_DEMANDS_ATTENTION      = WNCK_WINDOW_STATE_DEMANDS_ATTENTION,
-				STATE_URGENT                 = WNCK_WINDOW_STATE_URGENT,
-				STATE_ABOVE                  = WNCK_WINDOW_STATE_ABOVE,
-				STATE_BELOW                  = WNCK_WINDOW_STATE_BELOW
+			enum class State {
+				MINIMIZED              = WNCK_WINDOW_STATE_MINIMIZED,
+				MAXIMIZED_HORIZONTALLY = WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY,
+				MAXIMIZED_VERTICALLY   = WNCK_WINDOW_STATE_MAXIMIZED_VERTICALLY,
+				SHADED                 = WNCK_WINDOW_STATE_SHADED,
+				SKIP_PAGER             = WNCK_WINDOW_STATE_SKIP_PAGER,
+				SKIP_TASKLIST          = WNCK_WINDOW_STATE_SKIP_TASKLIST,
+				STICKY                 = WNCK_WINDOW_STATE_STICKY,
+				HIDDEN                 = WNCK_WINDOW_STATE_HIDDEN,
+				FULLSCREEN             = WNCK_WINDOW_STATE_FULLSCREEN,
+				DEMANDS_ATTENTION      = WNCK_WINDOW_STATE_DEMANDS_ATTENTION,
+				URGENT                 = WNCK_WINDOW_STATE_URGENT,
+				ABOVE                  = WNCK_WINDOW_STATE_ABOVE,
+				BELOW                  = WNCK_WINDOW_STATE_BELOW
 			};
 
-			enum Actions {
-				ACTION_MOVE                    = WNCK_WINDOW_ACTION_MOVE,
-				ACTION_RESIZE                  = WNCK_WINDOW_ACTION_RESIZE,
-				ACTION_SHADE                   = WNCK_WINDOW_ACTION_SHADE,
-				ACTION_STICK                   = WNCK_WINDOW_ACTION_STICK,
-				ACTION_MAXIMIZE_HORIZONTALLY   = WNCK_WINDOW_ACTION_MAXIMIZE_HORIZONTALLY,
-				ACTION_MAXIMIZE_VERTICALLY     = WNCK_WINDOW_ACTION_MAXIMIZE_VERTICALLY,
-				ACTION_CHANGE_WORKSPACE        = WNCK_WINDOW_ACTION_CHANGE_WORKSPACE, /* includes pin/unpin */
-				ACTION_CLOSE                   = WNCK_WINDOW_ACTION_CLOSE,
-				ACTION_UNMAXIMIZE_HORIZONTALLY = WNCK_WINDOW_ACTION_UNMAXIMIZE_HORIZONTALLY,
-				ACTION_UNMAXIMIZE_VERTICALLY   = WNCK_WINDOW_ACTION_UNMAXIMIZE_VERTICALLY,
-				ACTION_UNSHADE                 = WNCK_WINDOW_ACTION_UNSHADE,
-				ACTION_UNSTICK                 = WNCK_WINDOW_ACTION_UNSTICK,
-				ACTION_MINIMIZE                = WNCK_WINDOW_ACTION_MINIMIZE,
-				ACTION_UNMINIMIZE              = WNCK_WINDOW_ACTION_UNMINIMIZE,
-				ACTION_MAXIMIZE                = WNCK_WINDOW_ACTION_MAXIMIZE,
-				ACTION_UNMAXIMIZE              = WNCK_WINDOW_ACTION_UNMAXIMIZE,
-				ACTION_FULLSCREEN              = WNCK_WINDOW_ACTION_FULLSCREEN,
-				ACTION_ABOVE                   = WNCK_WINDOW_ACTION_ABOVE,
-				ACTION_BELOW                   = WNCK_WINDOW_ACTION_BELOW
+			enum class Actions {
+				MOVE                    = WNCK_WINDOW_ACTION_MOVE,
+				RESIZE                  = WNCK_WINDOW_ACTION_RESIZE,
+				SHADE                   = WNCK_WINDOW_ACTION_SHADE,
+				STICK                   = WNCK_WINDOW_ACTION_STICK,
+				MAXIMIZE_HORIZONTALLY   = WNCK_WINDOW_ACTION_MAXIMIZE_HORIZONTALLY,
+				MAXIMIZE_VERTICALLY     = WNCK_WINDOW_ACTION_MAXIMIZE_VERTICALLY,
+				CHANGE_WORKSPACE        = WNCK_WINDOW_ACTION_CHANGE_WORKSPACE, /* includes pin/unpin */
+				CLOSE                   = WNCK_WINDOW_ACTION_CLOSE,
+				UNMAXIMIZE_HORIZONTALLY = WNCK_WINDOW_ACTION_UNMAXIMIZE_HORIZONTALLY,
+				UNMAXIMIZE_VERTICALLY   = WNCK_WINDOW_ACTION_UNMAXIMIZE_VERTICALLY,
+				UNSHADE                 = WNCK_WINDOW_ACTION_UNSHADE,
+				UNSTICK                 = WNCK_WINDOW_ACTION_UNSTICK,
+				MINIMIZE                = WNCK_WINDOW_ACTION_MINIMIZE,
+				UNMINIMIZE              = WNCK_WINDOW_ACTION_UNMINIMIZE,
+				MAXIMIZE                = WNCK_WINDOW_ACTION_MAXIMIZE,
+				UNMAXIMIZE              = WNCK_WINDOW_ACTION_UNMAXIMIZE,
+				FULLSCREEN              = WNCK_WINDOW_ACTION_FULLSCREEN,
+				ABOVE                   = WNCK_WINDOW_ACTION_ABOVE,
+				BELOW                   = WNCK_WINDOW_ACTION_BELOW
 			};
 
+			enum class Gravity {
+				CURRENT   = WNCK_WINDOW_GRAVITY_CURRENT,
+				NORTHWEST = WNCK_WINDOW_GRAVITY_NORTHWEST,
+				NORTH     = WNCK_WINDOW_GRAVITY_NORTH,
+				NORTHEAST = WNCK_WINDOW_GRAVITY_NORTHEAST,
+				WEST      = WNCK_WINDOW_GRAVITY_WEST,
+				CENTER    = WNCK_WINDOW_GRAVITY_CENTER,
+				EAST      = WNCK_WINDOW_GRAVITY_EAST,
+				SOUTHWEST = WNCK_WINDOW_GRAVITY_SOUTHWEST,
+				SOUTH     = WNCK_WINDOW_GRAVITY_SOUTH,
+				SOUTHEAST = WNCK_WINDOW_GRAVITY_SOUTHEAST,
+				STATIC    = WNCK_WINDOW_GRAVITY_STATIC
+			};
+
+			enum class MoveResizeMask {
+				CHANGE_X              = WNCK_WINDOW_CHANGE_X,
+				CHANGE_Y              = WNCK_WINDOW_CHANGE_Y,
+				CHANGE_X_Y            = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_Y,
+				CHANGE_WIDTH          = WNCK_WINDOW_CHANGE_WIDTH,
+				CHANGE_X_WIDTH        = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_WIDTH,
+				CHANGE_Y_WIDTH        = WNCK_WINDOW_CHANGE_Y|WNCK_WINDOW_CHANGE_WIDTH,
+				CHANGE_X_Y_WIDTH      = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_Y|WNCK_WINDOW_CHANGE_WIDTH,
+				CHANGE_HEIGHT         = WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_X_HEIGHT       = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_Y_HEIGHT       = WNCK_WINDOW_CHANGE_Y|WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_X_Y_HEIGHT     = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_Y|WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_WIDTH_HEIGHT   = WNCK_WINDOW_CHANGE_WIDTH|WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_X_WIDTH_HEIGHT = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_WIDTH|WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_Y_WIDTH_HEIGHT = WNCK_WINDOW_CHANGE_Y|WNCK_WINDOW_CHANGE_WIDTH|WNCK_WINDOW_CHANGE_HEIGHT,
+				CHANGE_ALL            = WNCK_WINDOW_CHANGE_X|WNCK_WINDOW_CHANGE_Y|WNCK_WINDOW_CHANGE_WIDTH|WNCK_WINDOW_CHANGE_HEIGHT,
+			};
+			
 			
 			Window(WnckWindow* win);
 			Window(gulong xwindow);
@@ -146,11 +184,64 @@ namespace Wnck {
 			void maximize_vertically();
 			void unmaximize_vertically();
 			void maximize();
+			void unmaximize();
+			void shade();
+			void unshade();
+			void pin();
+			void unpin();
+			void stick();
+			void unstick();
+			void make_above();
+			void unmake_above();
+			void make_below();
+			void unmake_below();
+			void set_skip_pager(bool skip = true);
+			void set_skip_tasklist(bool skip = true);
+			void set_fullscreen(bool fullscreen = true);
+			void close(guint32 timestamp);
+			Wnck::Workspace *get_workspace() const;
+			bool is_on_workspace(Wnck::Workspace &workspace) const;
+			bool is_visible_on_workspace(Wnck::Workspace &workspace) const;
+			void move_to_workspace(Wnck::Workspace &space);
+			bool is_in_viewport(Wnck::Workspace &workspace) const;
+			void activate(guint32 timestamp);
+			bool is_active() const;
+			bool is_most_recently_activated() const;
+			void activate_transient(guint32 timestamp);
+			bool transient_is_most_recently_activated() const;
+			void set_icon_geometry(int x, int y, int width, int height);
+			void get_client_window_geometry(int &x, int &y, int &width, int &height) const;
+			void get_geometry(int &x, int &y, int &width, int &height) const;
+			void set_geometry(Gravity gravity, MoveResizeMask geometry_mask,
+                              int x, int y, int width, int height);
+			void keyboard_move();
+			void keyboard_size();
+			Glib::SignalProxy3<void, Window*, Actions, Actions> signal_actions_changed();
+			Glib::SignalProxy0<void> signal_geometry_changed();
+			Glib::SignalProxy0<void> signal_icon_changed();
+			Glib::SignalProxy0<void> signal_name_changed();
+			Glib::SignalProxy3<void, Window*, State, State> signal_state_changed();
+			Glib::SignalProxy0<void> signal_workspace_changed();
 		protected:
+			void on_actions_changed(WnckWindowActions changed_mask, WnckWindowActions new_state);
+			void on_geometry_changed();
+			void on_icon_changed();
+			void on_name_changed();
+			void on_state_changed(State changed_mask, State new_state);
+			void on_workspace_changed();
 
 		private:
+			friend class Window_Class;
 
 	};
+	
+	Window::MoveResizeMask operator|(Window::MoveResizeMask lhs, Window::MoveResizeMask rhs);
+	
+	Window::MoveResizeMask operator&(Window::MoveResizeMask lhs, Window::MoveResizeMask rhs);
+	
+	Window::MoveResizeMask operator^(Window::MoveResizeMask lhs, Window::MoveResizeMask rhs);
+
+	
 	
 }; //  namespace Wnck  //
 

@@ -25,6 +25,8 @@
 #include <string>
 #include <cstdlib>
 #include <vector>
+#include "wnck-screen.h"
+#include "wnck-action-menu.h"
 
 namespace gzz {
 
@@ -33,14 +35,41 @@ namespace gzz {
 		public:
 			typedef sigc::signal<bool> type_signal_right_clicked;
 
-			Task();
+			//Task();
+			Task(Wnck::Window* win);
+			Task(Wnck::Window* win, Wnck::ClassGroup* class_group,
+			     std::vector<Wnck::Window*> vec);
 			~Task();
 
+			void remove_window(Wnck::Window* win);
+			int count();
+			void add_window(Wnck::Window* win, Wnck::ClassGroup* class_group);
+			void refresh_state();
+			bool contains(Wnck::Window* win);
+			Wnck::ClassGroup* get_class_group();
+			
+			// signal handling //
 			type_signal_right_clicked signal_right_clicked();
 		protected:
 			type_signal_right_clicked m_signal_right_clicked;
+			Wnck::Window* m_wnck_window;
+			Wnck::ClassGroup* m_wnck_classgroup = 0;
+			std::vector<Wnck::Window*> m_wnck_windows;
+			Gtk::Box *m_hbox = 0;
+			Gtk::Label *m_label = 0;
+			Gtk::Image *m_image = 0;
+			Gtk::Arrow *m_arrow = 0;
+			Wnck::ActionMenu* m_menu_right_click = 0;
+			Gtk::Menu* m_menu = 0;
 
 			virtual bool on_button_press_event(GdkEventButton *event);
+			virtual void on_clicked();
+			int find_pos(std::vector<Wnck::Window*> vec, Wnck::Window* win);
+
+			// handlers //
+			void on_popup_menu_right_click(int& x, int& y, bool& push_in);
+			void on_menu_item_activate(Wnck::Window* win);
+			void on_popup_menu_left_click(int& x, int& y, bool& push_in);
 		private:
 
 	};

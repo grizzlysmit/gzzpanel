@@ -38,9 +38,15 @@ namespace Wnck {
 	class Screen : public Glib::Object 
 	{
 		public:
+			typedef Screen CppObjectType;
+			typedef Screen_Class CppClassType;
+			typedef WnckScreen BaseObjectType;
+			typedef WnckScreenClass BaseClassType;
+			
 			Screen();
-			Screen(int index);
-			Screen(gulong root_window_id);
+			explicit Screen(WnckScreen *screen);
+			explicit Screen(int index);
+			explicit Screen(gulong root_window_id);
 			~Screen();
 
 			///Provides access to the underlying C GtkObject.
@@ -87,8 +93,24 @@ namespace Wnck {
 			Glib::SignalProxy1<void, Workspace*> signal_workspace_created();
 			Glib::SignalProxy1<void, Workspace*> signal_workspace_destroyed();
 		protected:
+			void on_active_window_changed(Window* window);
+			void on_active_workspace_changed(Workspace* space);
+			void on_application_closed(Application* application);
+			void on_application_opened(Application* application);
+			void on_background_changed();
+			void on_class_group_closed(ClassGroup* class_group);
+			void on_class_group_opened(ClassGroup* class_group);
+			void on_showing_desktop_changed();
+			void on_viewports_changed();
+			void on_window_closed(Window* window);
+			void on_window_manager_changed();
+			void on_window_opened(Window* window);
+			void on_window_stacking_changed();
+			void on_workspace_created(Workspace* space);
+			void on_workspace_destroyed(Workspace* space);
 
 		private:
+			friend class Screen_Class;
 
 	};
 	
