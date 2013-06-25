@@ -26,8 +26,9 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
   : Gtk::Window(cobject), m_builder(builder), m_buttonMenu(nullptr), m_menuPanel(nullptr), 
     m_imagemenuitemExit(nullptr), m_labelClock(nullptr), m_labelDate(nullptr), m_boxDeskTop(nullptr), 
     m_pagerDeskTop(nullptr), m_boxTaskBar(nullptr), m_taskbar(nullptr), m_imagemenuitemUnity(nullptr), 
-    m_imagemenuitemCompiz(nullptr), m_imagemenuitemPreferences(nullptr), m_dialogPreferences(nullptr), 
-    m_icontheme(Gtk::IconTheme::get_default()), 
+    m_imagemenuitemCompiz(nullptr), m_imagemenuitemPreferences(nullptr), 
+    m_imagemenuitemRun(nullptr), m_dialogPreferences(nullptr), 
+    m_dialogRunApplication(nullptr), m_icontheme(Gtk::IconTheme::get_default()), 
     m_clockformat("%Y-%m-%d %H:%M:%S"), m_dateformat("%A %d %B"), m_refscreen(get_screen()), 
     m_wnck_screen(new Wnck::Screen), 
     m_counter(0)
@@ -61,6 +62,11 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	m_builder->get_widget("imagemenuitemPreferences", m_imagemenuitemPreferences);
 	if(m_imagemenuitemPreferences){
 		m_imagemenuitemPreferences->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Prefrences) );
+	}
+	// m_imagemenuitemRun //
+	m_builder->get_widget("imagemenuitemRun", m_imagemenuitemRun);
+	if(m_imagemenuitemRun){
+		m_imagemenuitemRun->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_RunApp) );
 	}
 
 	// m_labelClock //
@@ -98,7 +104,7 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		//m_taskbar->set_grouping_limit(4);
 		//m_taskbar->set_button_relief(Gtk::RELIEF_NORMAL);
 		//Glib::ustring data = "WnckTasklist {color: #ff0000;font: Lucida Grande 6}";
-		Glib::ustring data = "GtkWindow {color: #ff0000;font: Lucida Grande 8}";
+		Glib::ustring data = "GtkWindow {color: #000000;font: Lucida Grande 8}";
 		auto css = Gtk::CssProvider::create();
 		if(not css->load_from_data(data)) {
 			std::cerr << "Failed to load css" << std::endl;
@@ -108,7 +114,7 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		//auto ctx = m_taskbar->get_style_context();
 		auto ctx = get_style_context();
 		ctx->add_provider_for_screen(m_refscreen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-		m_boxTaskBar->override_font(Pango::FontDescription("[Lucida Grande][bold Red][10]"));
+		m_boxTaskBar->override_font(Pango::FontDescription("[Lucida Grande][bold Black][8]"));
 		m_boxTaskBar->pack_start(*m_taskbar, true, true, 0);
 		std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() == " << m_refscreen->get_width() << std::endl;
 		std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() - 2024 == " << m_refscreen->get_width() - 2024 << std::endl;
@@ -140,6 +146,11 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	m_builder->get_widget_derived("dialogPreferences", m_dialogPreferences);
 	if(m_dialogPreferences){
 		//m_dialogPreferences->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Exit) );
+	}
+	// m_dialogRunApplication //
+	m_builder->get_widget_derived("dialogRunApplication", m_dialogRunApplication);
+	if(m_dialogRunApplication){
+		//m_dialogRunApplication->signal_activate().connect( sigc::mem_fun(*this, &Main_window::on_menuitem_Exit) );
 	}
 
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_DOCK);
@@ -270,6 +281,14 @@ void Main_window::on_menuitem_Compiz()
 void Main_window::on_menuitem_Prefrences()
 {
 	//m_dialogPreferences->set_use_font(true);
+	Glib::RefPtr<Pango::Context> pc = get_pango_context();
+	Pango::FontDescription oldfd = pc->get_font_description();
+	//Glib::ustring fname = pango_font_description_to_string(oldfd.gobj());
+	Glib::ustring fname = oldfd.to_string();
+	m_dialogPreferences->set_font_name(fname);
+	m_dialogPreferences->set_min_button_size(m_taskbar->get_min_button_size());
+	m_dialogPreferences->set_entryTimeFormatTopln(m_clockformat);
+	m_dialogPreferences->set_entryTimeFormatBottomln(m_dateformat);
 	int res = m_dialogPreferences->run();
 	m_dialogPreferences->hide();
 	if(res){
@@ -282,12 +301,25 @@ void Main_window::on_menuitem_Prefrences()
 		std::cout << "Ok clicked. fd.to_string() == " << fd.to_string() << std::endl;
 		std::cout << "Ok clicked. fd.get_size() == " << fd.get_size()/1000 << std::endl;
 		m_taskbar->override_font(fd);
+		override_font(fd);
+		m_taskbar->set_min_button_size(m_dialogPreferences->get_min_button_size());
+		m_clockformat = m_dialogPreferences->get_entryTimeFormatTopln();
+		m_dateformat = m_dialogPreferences->get_entryTimeFormatBottomln();
 	}else{
 		std::cout << "Cancel clicked." << std::endl;
 	}
 }
 
-
+void Main_window::on_menuitem_RunApp()
+{
+	int res = m_dialogRunApplication->run();
+	m_dialogRunApplication->hide();
+	if(res){
+		std::cout << "Execute clicked." << std::endl;
+	}else{
+		std::cout << "Cancel clicked." << std::endl;
+	}
+}
 
 
 

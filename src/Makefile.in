@@ -74,7 +74,8 @@ am_gzzpanel_OBJECTS = gzzpanel-main.$(OBJEXT) \
 	gzzpanel-wnck-application.$(OBJEXT) \
 	gzzpanel-wnck-class-group.$(OBJEXT) gzzpanel-applet.$(OBJEXT) \
 	gzzpanel-prefs.$(OBJEXT) gzzpanel-wrap_init.$(OBJEXT) \
-	gzzpanel-wnck-action-menu.$(OBJEXT)
+	gzzpanel-wnck-action-menu.$(OBJEXT) gzzpanel-lvt.$(OBJEXT) \
+	gzzpanel-runapp.$(OBJEXT)
 gzzpanel_OBJECTS = $(am_gzzpanel_OBJECTS)
 am__DEPENDENCIES_1 =
 gzzpanel_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -375,7 +376,11 @@ gzzpanel_SOURCES = \
 	wrap_init.h \
 	wrap_init.cc \
 	wnck-action-menu.cc \
-	wnck-action-menu.h
+	wnck-action-menu.h \
+	lvt.cc \
+	lvt.h \
+	runapp.cc \
+	runapp.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 gzzpanel_LDFLAGS = \
@@ -475,9 +480,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-applet.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-lvt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-mainwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-prefs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-runapp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-task.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-taskbar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-action-menu.Po@am__quote@
@@ -720,6 +727,34 @@ gzzpanel-wnck-action-menu.obj: wnck-action-menu.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-action-menu.cc' object='gzzpanel-wnck-action-menu.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-wnck-action-menu.obj `if test -f 'wnck-action-menu.cc'; then $(CYGPATH_W) 'wnck-action-menu.cc'; else $(CYGPATH_W) '$(srcdir)/wnck-action-menu.cc'; fi`
+
+gzzpanel-lvt.o: lvt.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-lvt.o -MD -MP -MF $(DEPDIR)/gzzpanel-lvt.Tpo -c -o gzzpanel-lvt.o `test -f 'lvt.cc' || echo '$(srcdir)/'`lvt.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-lvt.Tpo $(DEPDIR)/gzzpanel-lvt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='lvt.cc' object='gzzpanel-lvt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-lvt.o `test -f 'lvt.cc' || echo '$(srcdir)/'`lvt.cc
+
+gzzpanel-lvt.obj: lvt.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-lvt.obj -MD -MP -MF $(DEPDIR)/gzzpanel-lvt.Tpo -c -o gzzpanel-lvt.obj `if test -f 'lvt.cc'; then $(CYGPATH_W) 'lvt.cc'; else $(CYGPATH_W) '$(srcdir)/lvt.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-lvt.Tpo $(DEPDIR)/gzzpanel-lvt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='lvt.cc' object='gzzpanel-lvt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-lvt.obj `if test -f 'lvt.cc'; then $(CYGPATH_W) 'lvt.cc'; else $(CYGPATH_W) '$(srcdir)/lvt.cc'; fi`
+
+gzzpanel-runapp.o: runapp.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-runapp.o -MD -MP -MF $(DEPDIR)/gzzpanel-runapp.Tpo -c -o gzzpanel-runapp.o `test -f 'runapp.cc' || echo '$(srcdir)/'`runapp.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-runapp.Tpo $(DEPDIR)/gzzpanel-runapp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='runapp.cc' object='gzzpanel-runapp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-runapp.o `test -f 'runapp.cc' || echo '$(srcdir)/'`runapp.cc
+
+gzzpanel-runapp.obj: runapp.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-runapp.obj -MD -MP -MF $(DEPDIR)/gzzpanel-runapp.Tpo -c -o gzzpanel-runapp.obj `if test -f 'runapp.cc'; then $(CYGPATH_W) 'runapp.cc'; else $(CYGPATH_W) '$(srcdir)/runapp.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gzzpanel-runapp.Tpo $(DEPDIR)/gzzpanel-runapp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='runapp.cc' object='gzzpanel-runapp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -c -o gzzpanel-runapp.obj `if test -f 'runapp.cc'; then $(CYGPATH_W) 'runapp.cc'; else $(CYGPATH_W) '$(srcdir)/runapp.cc'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

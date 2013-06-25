@@ -62,7 +62,11 @@ gzzpanel_SOURCES = \
 	wrap_init.h \
 	wrap_init.cc \
 	wnck-action-menu.cc \
-	wnck-action-menu.h
+	wnck-action-menu.h \
+	lvt.cc \
+	lvt.h \
+	runapp.cc \
+	runapp.h
 
 gzzpanel_CXXFLAGS = -std=c++11 
 

@@ -31,6 +31,7 @@
 //#include "wnck-tasklist.h"
 #include "prefs.h"
 #include "taskbar.h"
+#include "runapp.h"
 
 class Main_window: public Gtk::Window 
 {
@@ -55,9 +56,11 @@ class Main_window: public Gtk::Window
 		Gtk::ImageMenuItem *m_imagemenuitemUnity;
 		Gtk::ImageMenuItem *m_imagemenuitemCompiz;
 		Gtk::ImageMenuItem *m_imagemenuitemPreferences;
+		Gtk::ImageMenuItem* m_imagemenuitemRun;
 
 		// dialogs //
 		Prefs *m_dialogPreferences;
+		RunApp* m_dialogRunApplication;
 
 		//std::vector<Gtk::Button*> DesktopButtons;
 		//std::vector<Gtk::DrawingArea*> DesktopDrawingAreas;
@@ -85,6 +88,7 @@ class Main_window: public Gtk::Window
 		void on_menuitem_Unity();
 		void on_menuitem_Compiz();
 		void on_menuitem_Prefrences();
+		void on_menuitem_RunApp();
 		void on_popup_menu_position(int& x, int& y, bool& push_in);
 		GdkPixbuf* on_load_icon(const Glib::ustring& icon_name, int size, unsigned flags);
 		void on_window_mapped();

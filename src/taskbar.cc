@@ -357,6 +357,18 @@ namespace gzz {
 				  << "\t done caculating min:\t min_class_group  == " << min_class_group << "\t mincount == " << mincount << std::endl;
 		return min_class_group;
 	}
+
+	int Taskbar::get_min_button_size()
+	{
+		return m_min_button_size;
+	}
+
+	void Taskbar::set_min_button_size(int sz)
+	{
+		m_min_button_size = sz;
+	}
+
+
 	
 	
 

@@ -17,44 +17,27 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _PREFS_H_
-#define _PREFS_H_
+#ifndef _RUNAPP_H_
+#define _RUNAPP_H_
 #include <gtkmm.h>
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <cstdlib>
 #include <vector>
-#include "lvt.h"
 
-class Prefs: public Gtk::Dialog 
+class RunApp : public Gtk::Dialog 
 {
 	public:
-		Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-		~Prefs();
+		RunApp(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+		~RunApp();
 
-		Glib::ustring get_font_name() const;
-		void set_font_name(Glib::ustring font);
-		int get_min_button_size() const;
-		void set_min_button_size(int sz);
-		Glib::ustring get_entryTimeFormatTopln() const;
-		void set_entryTimeFormatTopln(Glib::ustring format);
-		Glib::ustring get_entryTimeFormatBottomln() const;
-		void set_entryTimeFormatBottomln(Glib::ustring format);
 	protected:
 		const Glib::RefPtr<Gtk::Builder>& m_builder;
 
-		// gui stuff in the ui file //
-		Gtk::FontButton *m_fontbuttonPrefesGlobal;
-		Gtk::SpinButton *m_spinbuttonMinTaskWidth;
-		Glib::RefPtr<Gtk::Adjustment> m_adjustmentMinTaskWidth;
-		Gtk::Entry *m_entryTimeFormatTopln;
-		Gtk::Entry *m_entryTimeFormatBottomln;
-		Gtk::ScrolledWindow *m_scrolledwindowPrefsClockHelp;
-		LVT* m_lvtPrefsClockHelp;
 	private:
 
 };
 
-#endif // _PREFS_H_
+#endif // _RUNAPP_H_
 

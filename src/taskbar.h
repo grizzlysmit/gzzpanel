@@ -42,6 +42,8 @@ namespace gzz {
 			virtual void refreshbar();
 			virtual void clearbar();
 			virtual std::vector<Wnck::Window*> get_windows_on_viewport(const std::vector<Wnck::Window*> & vec, Wnck::Workspace* workspace);
+			int get_min_button_size();
+			void set_min_button_size(int sz);
 		protected:
 			Wnck::Screen &m_wnck_screen;
 			std::map<Wnck::Window*, Task*> m_mappings;
