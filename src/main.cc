@@ -60,6 +60,8 @@ int main (int argc, char *argv[])
 	//builder->get_widget("main_window", main_win);
 	builder->get_widget_derived("main_window", main_win);
 
+	main_win->set_progname(basename(argv[0]));
+
 
 	if (main_win)
 	{

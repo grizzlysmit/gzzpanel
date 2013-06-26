@@ -29,12 +29,28 @@
 class RunApp : public Gtk::Dialog 
 {
 	public:
+		struct CmdHist {
+			Glib::ustring datetime_str;
+			bool used_term;
+			Glib::ustring cmd;
+			friend std::ostream& operator<<(std::ostream& out, const CmdHist& cmd_hist);
+			friend std::istream& operator>>(std::istream& in, CmdHist& cmd_hist);
+		};
+		
 		RunApp(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 		~RunApp();
 
+		Glib::ustring get_entry_text() const;
+		void set_entry_text(Glib::ustring text);
+		bool get_use_term();
+		void set_text_items(const std::vector<CmdHist>& items);
 	protected:
 		const Glib::RefPtr<Gtk::Builder>& m_builder;
 
+		// gui stuff //
+		Gtk::ComboBoxText* m_comboboxtextRunApplication;
+		Gtk::Entry* m_comboboxtextentry;
+		Gtk::CheckButton* m_checkbuttonRunInTerm;
 	private:
 
 };

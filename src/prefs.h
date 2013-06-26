@@ -20,6 +20,7 @@
 #ifndef _PREFS_H_
 #define _PREFS_H_
 #include <gtkmm.h>
+#include <ostream>
 #include <iostream>
 #include <iomanip>
 #include <string>

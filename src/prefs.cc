@@ -18,6 +18,7 @@
  */
 
 #include "prefs.h"
+#include <ios>
 
 Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Dialog(cobject), m_builder(builder), 
@@ -201,7 +202,5 @@ void Prefs::set_entryTimeFormatBottomln(Glib::ustring format)
 {
 	m_entryTimeFormatBottomln->set_text(format);
 }
-
-
 
 

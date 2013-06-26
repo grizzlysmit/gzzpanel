@@ -21,6 +21,11 @@
 #include <ctime>       /* time_t, struct tm, time, localtime, strftime */
 #include <boost/filesystem.hpp>
 #include <gdk/gdkx.h>
+#include <cstdlib>
+#include <boost/filesystem.hpp>
+#include <fstream>
+#include <algorithm>
+
 
 Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Window(cobject), m_builder(builder), m_buttonMenu(nullptr), m_menuPanel(nullptr), 
@@ -312,13 +317,106 @@ void Main_window::on_menuitem_Prefrences()
 
 void Main_window::on_menuitem_RunApp()
 {
+	std::vector<RunApp::CmdHist> history = load_cmd_history();
+	m_dialogRunApplication->set_text_items(history);
+	m_dialogRunApplication->set_entry_text("");
 	int res = m_dialogRunApplication->run();
 	m_dialogRunApplication->hide();
 	if(res){
+		Glib::ustring cmd = m_dialogRunApplication->get_entry_text();
+		RunApp::CmdHist cmd_hist;
+		time_t rawtime;
+		struct tm* timeinfo;
+		char buffer[80];
+
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+
+		strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
+		cmd_hist.datetime_str = buffer;
+		cmd_hist.used_term = m_dialogRunApplication->get_use_term();
+		cmd_hist.cmd = cmd;
+		history.insert(history.begin(), cmd_hist);
+		save_cmd_history(history);
+		if(cmd_hist.used_term){
+			Glib::ustring command = "gnome-terminal --execute " + cmd;
+			system((command + " &").c_str());
+		}else{
+			system((cmd + " &").c_str());
+		}
 		std::cout << "Execute clicked." << std::endl;
 	}else{
 		std::cout << "Cancel clicked." << std::endl;
 	}
+}
+
+bool Main_window::insure_config_path()
+{
+	std::string path = std::getenv("HOME");
+	path += "/.config";
+	if(!boost::filesystem::exists(path)){
+		mkdir(path.c_str(), 0700);
+	}else if(!boost::filesystem::is_directory(path)){
+		return false;
+	}
+	path += "/" + m_progname;
+	if(!boost::filesystem::exists(path)){
+		mkdir(path.c_str(), 0775);
+	}
+	return boost::filesystem::exists(path) && boost::filesystem::is_directory(path);
+}
+
+std::vector<RunApp::CmdHist> Main_window::load_cmd_history()
+{
+	std::vector<RunApp::CmdHist> result;
+	if(insure_config_path()){
+		std::string path = std::getenv("HOME");
+		path += "/.config/" + m_progname + "/cmd_history";
+		std::ifstream in(path);
+		if(in){
+			RunApp::CmdHist cmd_hist;
+			in >> cmd_hist;
+			std::string line, datestr, used_str, cmd;
+			bool used_term;
+			while(in){
+				result.insert(result.begin(), cmd_hist);
+				in >> cmd_hist;
+			}
+			in.close();
+		}
+	}
+	return result;
+}
+
+bool Main_window::save_cmd_history(std::vector<RunApp::CmdHist> history)
+{
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: history.size() == " << history.size() << std::endl;
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: m_history_limit == " << m_history_limit << std::endl;
+	while(history.size() > m_history_limit){
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: history.size() == " << history.size() << std::endl;
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: m_history_limit == " << m_history_limit << std::endl;
+		history.erase(history.end() - 1);
+	}
+	std::reverse(history.begin(), history.end());
+	if(insure_config_path()){
+		std::string path = std::getenv("HOME");
+		path += "/.config/" + m_progname + "/cmd_history";
+		std::ofstream out(path);
+		if(out){
+			for(auto hist : history){
+				out << hist << std::flush; // hist will do an std::endl anyway //
+				if(!out) return false;
+			}
+		}
+		bool result = out;
+		out.close();
+		return result;
+	}
+}
+
+void Main_window::set_progname(std::string progname)
+{
+	m_progname = progname;
 }
 
 

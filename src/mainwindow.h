@@ -39,6 +39,7 @@ class Main_window: public Gtk::Window
 		Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 		~Main_window();
 
+		void set_progname(std::string progname);
 	protected:
 		const Glib::RefPtr<Gtk::Builder>& m_builder;
 
@@ -78,6 +79,8 @@ class Main_window: public Gtk::Window
 		Glib::RefPtr<Gdk::Screen> m_refscreen;
 		Wnck::Screen *m_wnck_screen;
 		unsigned long long m_counter;
+		std::string m_progname;
+		int m_history_limit = 256;
 		
 		// a time out handler  //
 		bool on_timeout();
@@ -96,6 +99,9 @@ class Main_window: public Gtk::Window
 
 		// ancillary //
 		void setup_desktops();
+		bool insure_config_path();
+		std::vector<RunApp::CmdHist> load_cmd_history();
+		bool save_cmd_history(std::vector<RunApp::CmdHist> history);
 	private:
 
 };
