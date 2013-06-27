@@ -16,6 +16,7 @@
 @SET_MAKE@
 
 
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -63,7 +64,51 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(uidir)"
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(uidir)"
+LTLIBRARIES = $(lib_LTLIBRARIES)
+libwnckmm_la_LIBADD =
+am_libwnckmm_la_OBJECTS = libwnckmm_la-applet.lo libwnckmm_la-task.lo \
+	libwnckmm_la-taskbar.lo libwnckmm_la-wnck-action-menu.lo \
+	libwnckmm_la-wnck-application.lo \
+	libwnckmm_la-wnck-class-group.lo libwnckmm_la-wnck-pager.lo \
+	libwnckmm_la-wnck-screen.lo libwnckmm_la-wnck-tasklist.lo \
+	libwnckmm_la-wnck-window.lo libwnckmm_la-wnck-workspace.lo \
+	libwnckmm_la-wrap_init.lo
+libwnckmm_la_OBJECTS = $(am_libwnckmm_la_OBJECTS)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+libwnckmm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(libwnckmm_la_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(bin_PROGRAMS)
 am_gzzpanel_OBJECTS = gzzpanel-main.$(OBJEXT) \
 	gzzpanel-mainwindow.$(OBJEXT) gzzpanel-wnck-pager.$(OBJEXT) \
@@ -79,9 +124,6 @@ am_gzzpanel_OBJECTS = gzzpanel-main.$(OBJEXT) \
 gzzpanel_OBJECTS = $(am_gzzpanel_OBJECTS)
 am__DEPENDENCIES_1 =
 gzzpanel_DEPENDENCIES = $(am__DEPENDENCIES_1)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
 gzzpanel_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(gzzpanel_CXXFLAGS) \
 	$(CXXFLAGS) $(gzzpanel_LDFLAGS) $(LDFLAGS) -o $@
@@ -127,40 +169,13 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(gzzpanel_SOURCES)
-DIST_SOURCES = $(gzzpanel_SOURCES)
+SOURCES = $(libwnckmm_la_SOURCES) $(gzzpanel_SOURCES)
+DIST_SOURCES = $(libwnckmm_la_SOURCES) $(gzzpanel_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__uninstall_files_from_dir = { \
-  test -z "$$files" \
-    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
-    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
-         $(am__cd) "$$dir" && rm -f $$files; }; \
-  }
 DATA = $(ui_DATA)
 ETAGS = etags
 CTAGS = ctags
@@ -389,6 +404,44 @@ gzzpanel_LDFLAGS = \
 
 gzzpanel_LDADD = $(GZZPANEL_LIBS)
 EXTRA_DIST = $(ui_DATA)
+lib_LTLIBRARIES = \
+	libwnckmm.la
+
+libwnckmm_la_SOURCES = \
+	applet.cc \
+	applet.h \
+	common.h \
+	libwnckmm.pc.in \
+	task.cc \
+	task.h \
+	taskbar.cc \
+	taskbar.h \
+	wnck-action-menu.cc \
+	wnck-action-menu.h \
+	wnck-application.cc \
+	wnck-application.h \
+	wnck-class-group.cc \
+	wnck-class-group.h \
+	wnck-pager.cc \
+	wnck-pager.h \
+	wnck-screen.cc \
+	wnck-screen.h \
+	wnck-tasklist.cc \
+	wnck-tasklist.h \
+	wnck-window.cc \
+	wnck-window.h \
+	wnck-workspace.cc \
+	wnck-workspace.h \
+	wrap_init.cc \
+	wrap_init.h \
+	private/wnck-application_p.h \
+	private/wnck-class-group_p.h \
+	private/wnck-screen_p.h \
+	private/wnck-tasklist_p.h \
+	private/wnck-window_p.h \
+	private/wnck-workspace_p.h
+
+libwnckmm_la_CXXFLAGS = -std=c++11 
 all: all-am
 
 .SUFFIXES:
@@ -423,6 +476,40 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(libdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(libdir)" || exit 1; \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
+	}
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
+	done
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+libwnckmm.la: $(libwnckmm_la_OBJECTS) $(libwnckmm_la_DEPENDENCIES) $(EXTRA_libwnckmm_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libwnckmm_la_LINK) -rpath $(libdir) $(libwnckmm_la_OBJECTS) $(libwnckmm_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -496,6 +583,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-window.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wnck-workspace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzzpanel-wrap_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-applet.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-task.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-taskbar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-action-menu.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-application.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-class-group.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-pager.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-screen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-tasklist.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-window.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wnck-workspace.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwnckmm_la-wrap_init.Plo@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -517,6 +616,90 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+libwnckmm_la-applet.lo: applet.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-applet.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-applet.Tpo -c -o libwnckmm_la-applet.lo `test -f 'applet.cc' || echo '$(srcdir)/'`applet.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-applet.Tpo $(DEPDIR)/libwnckmm_la-applet.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='applet.cc' object='libwnckmm_la-applet.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-applet.lo `test -f 'applet.cc' || echo '$(srcdir)/'`applet.cc
+
+libwnckmm_la-task.lo: task.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-task.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-task.Tpo -c -o libwnckmm_la-task.lo `test -f 'task.cc' || echo '$(srcdir)/'`task.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-task.Tpo $(DEPDIR)/libwnckmm_la-task.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='task.cc' object='libwnckmm_la-task.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-task.lo `test -f 'task.cc' || echo '$(srcdir)/'`task.cc
+
+libwnckmm_la-taskbar.lo: taskbar.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-taskbar.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-taskbar.Tpo -c -o libwnckmm_la-taskbar.lo `test -f 'taskbar.cc' || echo '$(srcdir)/'`taskbar.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-taskbar.Tpo $(DEPDIR)/libwnckmm_la-taskbar.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='taskbar.cc' object='libwnckmm_la-taskbar.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-taskbar.lo `test -f 'taskbar.cc' || echo '$(srcdir)/'`taskbar.cc
+
+libwnckmm_la-wnck-action-menu.lo: wnck-action-menu.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-action-menu.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-action-menu.Tpo -c -o libwnckmm_la-wnck-action-menu.lo `test -f 'wnck-action-menu.cc' || echo '$(srcdir)/'`wnck-action-menu.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-action-menu.Tpo $(DEPDIR)/libwnckmm_la-wnck-action-menu.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-action-menu.cc' object='libwnckmm_la-wnck-action-menu.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-action-menu.lo `test -f 'wnck-action-menu.cc' || echo '$(srcdir)/'`wnck-action-menu.cc
+
+libwnckmm_la-wnck-application.lo: wnck-application.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-application.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-application.Tpo -c -o libwnckmm_la-wnck-application.lo `test -f 'wnck-application.cc' || echo '$(srcdir)/'`wnck-application.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-application.Tpo $(DEPDIR)/libwnckmm_la-wnck-application.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-application.cc' object='libwnckmm_la-wnck-application.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-application.lo `test -f 'wnck-application.cc' || echo '$(srcdir)/'`wnck-application.cc
+
+libwnckmm_la-wnck-class-group.lo: wnck-class-group.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-class-group.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-class-group.Tpo -c -o libwnckmm_la-wnck-class-group.lo `test -f 'wnck-class-group.cc' || echo '$(srcdir)/'`wnck-class-group.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-class-group.Tpo $(DEPDIR)/libwnckmm_la-wnck-class-group.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-class-group.cc' object='libwnckmm_la-wnck-class-group.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-class-group.lo `test -f 'wnck-class-group.cc' || echo '$(srcdir)/'`wnck-class-group.cc
+
+libwnckmm_la-wnck-pager.lo: wnck-pager.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-pager.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-pager.Tpo -c -o libwnckmm_la-wnck-pager.lo `test -f 'wnck-pager.cc' || echo '$(srcdir)/'`wnck-pager.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-pager.Tpo $(DEPDIR)/libwnckmm_la-wnck-pager.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-pager.cc' object='libwnckmm_la-wnck-pager.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-pager.lo `test -f 'wnck-pager.cc' || echo '$(srcdir)/'`wnck-pager.cc
+
+libwnckmm_la-wnck-screen.lo: wnck-screen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-screen.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-screen.Tpo -c -o libwnckmm_la-wnck-screen.lo `test -f 'wnck-screen.cc' || echo '$(srcdir)/'`wnck-screen.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-screen.Tpo $(DEPDIR)/libwnckmm_la-wnck-screen.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-screen.cc' object='libwnckmm_la-wnck-screen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-screen.lo `test -f 'wnck-screen.cc' || echo '$(srcdir)/'`wnck-screen.cc
+
+libwnckmm_la-wnck-tasklist.lo: wnck-tasklist.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-tasklist.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-tasklist.Tpo -c -o libwnckmm_la-wnck-tasklist.lo `test -f 'wnck-tasklist.cc' || echo '$(srcdir)/'`wnck-tasklist.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-tasklist.Tpo $(DEPDIR)/libwnckmm_la-wnck-tasklist.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-tasklist.cc' object='libwnckmm_la-wnck-tasklist.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-tasklist.lo `test -f 'wnck-tasklist.cc' || echo '$(srcdir)/'`wnck-tasklist.cc
+
+libwnckmm_la-wnck-window.lo: wnck-window.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-window.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-window.Tpo -c -o libwnckmm_la-wnck-window.lo `test -f 'wnck-window.cc' || echo '$(srcdir)/'`wnck-window.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-window.Tpo $(DEPDIR)/libwnckmm_la-wnck-window.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-window.cc' object='libwnckmm_la-wnck-window.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-window.lo `test -f 'wnck-window.cc' || echo '$(srcdir)/'`wnck-window.cc
+
+libwnckmm_la-wnck-workspace.lo: wnck-workspace.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wnck-workspace.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wnck-workspace.Tpo -c -o libwnckmm_la-wnck-workspace.lo `test -f 'wnck-workspace.cc' || echo '$(srcdir)/'`wnck-workspace.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wnck-workspace.Tpo $(DEPDIR)/libwnckmm_la-wnck-workspace.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wnck-workspace.cc' object='libwnckmm_la-wnck-workspace.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wnck-workspace.lo `test -f 'wnck-workspace.cc' || echo '$(srcdir)/'`wnck-workspace.cc
+
+libwnckmm_la-wrap_init.lo: wrap_init.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -MT libwnckmm_la-wrap_init.lo -MD -MP -MF $(DEPDIR)/libwnckmm_la-wrap_init.Tpo -c -o libwnckmm_la-wrap_init.lo `test -f 'wrap_init.cc' || echo '$(srcdir)/'`wrap_init.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwnckmm_la-wrap_init.Tpo $(DEPDIR)/libwnckmm_la-wrap_init.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='wrap_init.cc' object='libwnckmm_la-wrap_init.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwnckmm_la_CXXFLAGS) $(CXXFLAGS) -c -o libwnckmm_la-wrap_init.lo `test -f 'wrap_init.cc' || echo '$(srcdir)/'`wrap_init.cc
 
 gzzpanel-main.o: main.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gzzpanel_CXXFLAGS) $(CXXFLAGS) -MT gzzpanel-main.o -MD -MP -MF $(DEPDIR)/gzzpanel-main.Tpo -c -o gzzpanel-main.o `test -f 'main.cc' || echo '$(srcdir)/'`main.cc
@@ -867,9 +1050,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(DATA)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+install-binPROGRAMS: install-libLTLIBRARIES
+
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(uidir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(uidir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -904,7 +1089,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
+	clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -930,7 +1116,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS
+install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -970,24 +1156,26 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-local uninstall-uiDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-local uninstall-uiDATA
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libtool ctags distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip install-uiDATA installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-local \
-	uninstall-uiDATA
+	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip install-uiDATA installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-libLTLIBRARIES uninstall-local uninstall-uiDATA
 
 
 # Remove ui directory on uninstall

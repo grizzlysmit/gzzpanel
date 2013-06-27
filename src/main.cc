@@ -32,8 +32,8 @@
 
 
 /* For testing propose use the local (not installed) ui file */
-/* #define UI_FILE PACKAGE_DATA_DIR"/ui/gzzpanel.ui" */
-#define UI_FILE "src/gzzpanel.ui"
+#define UI_FILE PACKAGE_DATA_DIR"/ui/gzzpanel.ui"
+/*#define UI_FILE "src/gzzpanel.ui"*/
 
    
 int main (int argc, char *argv[])

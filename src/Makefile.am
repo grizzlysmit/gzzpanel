@@ -84,3 +84,42 @@ uninstall-local:
 	-rm -r $(uidir)
 	-rm -r $(pkgdatadir)
 
+
+lib_LTLIBRARIES =  \
+	libwnckmm.la
+
+libwnckmm_la_SOURCES =  \
+	applet.cc \
+	applet.h \
+	common.h \
+	libwnckmm.pc.in \
+	task.cc \
+	task.h \
+	taskbar.cc \
+	taskbar.h \
+	wnck-action-menu.cc \
+	wnck-action-menu.h \
+	wnck-application.cc \
+	wnck-application.h \
+	wnck-class-group.cc \
+	wnck-class-group.h \
+	wnck-pager.cc \
+	wnck-pager.h \
+	wnck-screen.cc \
+	wnck-screen.h \
+	wnck-tasklist.cc \
+	wnck-tasklist.h \
+	wnck-window.cc \
+	wnck-window.h \
+	wnck-workspace.cc \
+	wnck-workspace.h \
+	wrap_init.cc \
+	wrap_init.h \
+	private/wnck-application_p.h \
+	private/wnck-class-group_p.h \
+	private/wnck-screen_p.h \
+	private/wnck-tasklist_p.h \
+	private/wnck-window_p.h \
+	private/wnck-workspace_p.h
+
+libwnckmm_la_CXXFLAGS = -std=c++11 
