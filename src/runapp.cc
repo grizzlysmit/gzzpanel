@@ -35,6 +35,7 @@ RunApp::RunApp(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 	if(m_checkbuttonRunInTerm){
 		//m_checkbuttonRunInTerm->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
 	}
+	set_keep_above(true);
 }
 
 RunApp::~RunApp()

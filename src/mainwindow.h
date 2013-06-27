@@ -32,6 +32,8 @@
 #include "prefs.h"
 #include "taskbar.h"
 #include "runapp.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 class Main_window: public Gtk::Window 
 {
@@ -40,6 +42,8 @@ class Main_window: public Gtk::Window
 		~Main_window();
 
 		void set_progname(std::string progname);
+		void set_up_config_file();
+		void apply_defaults();
 	protected:
 		const Glib::RefPtr<Gtk::Builder>& m_builder;
 
@@ -81,6 +85,8 @@ class Main_window: public Gtk::Window
 		unsigned long long m_counter;
 		std::string m_progname;
 		int m_history_limit = 256;
+		Glib::ustring m_clockfontname = "Lucida Grande 9";
+		Pango::Weight m_clock_font_weight = Pango::WEIGHT_BOLD;
 		
 		// a time out handler  //
 		bool on_timeout();
@@ -99,9 +105,11 @@ class Main_window: public Gtk::Window
 
 		// ancillary //
 		void setup_desktops();
-		bool insure_config_path();
+		bool insure_config_path() const;
 		std::vector<RunApp::CmdHist> load_cmd_history();
 		bool save_cmd_history(std::vector<RunApp::CmdHist> history);
+		boost::property_tree::ptree get_config() const;
+		void set_config(boost::property_tree::ptree pt);
 	private:
 
 };

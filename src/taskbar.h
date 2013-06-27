@@ -44,17 +44,24 @@ namespace gzz {
 			virtual std::vector<Wnck::Window*> get_windows_on_viewport(const std::vector<Wnck::Window*> & vec, Wnck::Workspace* workspace);
 			int get_min_button_size();
 			void set_min_button_size(int sz);
+			Pango::FontDescription get_fontdescription() const;
+			void set_fontdescription(Pango::FontDescription fd);
+			Gdk::RGBA get_colour() const;
+			void set_colour(Gdk::RGBA rgba);
 		protected:
 			Wnck::Screen &m_wnck_screen;
-			std::map<Wnck::Window*, Task*> m_mappings;
+			std::map<Wnck::Window*, Task*> m_mappings{};
 			int m_min_button_size = 150;
 			bool m_min_buttons_too_small = false;
 			int m_max_group_size = 0;
 			std::map<WnckClassGroup*, Task*> m_class_group_mappings;
 			Wnck::ClassGroup* m_max_class_group = nullptr;
 			bool m_buttons_can_expand = false;
+			Pango::FontDescription m_fontdescription;
+			Gdk::RGBA m_fontColour;
 
 			Task* get_task_from_class_group_mappings(Wnck::Window* win);
+			void erase_task_from_class_group_mappings_by_window(Wnck::Window* win);
 			WnckClassGroup* min_count_task();
 
 			// handlers //

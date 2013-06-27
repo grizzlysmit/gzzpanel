@@ -29,14 +29,16 @@ namespace gzz {
 
 	Task::Task(Wnck::Window* win)
 		: Gtk::Button(), m_wnck_window(win), m_wnck_classgroup(0), 
-	      m_wnck_windows({win})
+	      m_wnck_windows({win}), m_constructed(false)
 	{
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				  << "\t starting m_wnck_window->get_name()" << m_wnck_window->get_name() << std::endl;*/
 		m_hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 0));
-		if(m_wnck_window->has_icon_name()){
-			m_image = Gtk::manage(new Gtk::Image(m_wnck_window->get_icon()));
-			m_hbox->pack_start(*m_image, false, true, 2);
-			m_image->show();
-		}
+		m_image = Gtk::manage(new Gtk::Image(m_wnck_window->get_icon()));
+		m_hbox->pack_start(*m_image, false, true, 2);
+		m_image->show();
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				  << " m_wnck_window->get_name()" << m_wnck_window->get_name() << std::endl;*/
 		m_label = Gtk::manage(new Gtk::Label(m_wnck_window->get_name()));
 		m_label->set_ellipsize(Pango::ELLIPSIZE_END);
 		m_label->set_justify(Gtk::JUSTIFY_LEFT);
@@ -47,12 +49,15 @@ namespace gzz {
 		add(*m_hbox);
 		m_hbox->show_all();
 		m_menu_right_click = new Wnck::ActionMenu(*m_wnck_window);
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				  << "\t finished construction m_wnck_window->get_name()" << m_wnck_window->get_name() << std::endl;*/
+		m_constructed = true;
 	}
 
 	Task::Task(Wnck::Window* win, Wnck::ClassGroup* class_group,
 			   std::vector<Wnck::Window*> vec)
 		: Gtk::Button(), m_wnck_window(win), m_wnck_classgroup(class_group), 
-	      m_wnck_windows(vec.begin(), vec.end())
+	      m_wnck_windows(vec.begin(), vec.end()), m_constructed(false)
 	{
 		m_hbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 0));
 		if(m_wnck_windows.size()  > 1){
@@ -73,14 +78,18 @@ namespace gzz {
 		add(*m_hbox);
 		m_hbox->show_all();
 		m_menu_right_click = new Wnck::ActionMenu(*m_wnck_window);
+		m_constructed = true;
 	}
 
 	Task::~Task()
 	{
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				  << " destructor called " << std::endl;*/
 		if(m_menu_right_click){
 			delete m_menu_right_click;
 			m_menu_right_click = 0;
 		}
+		m_destructed = true;
 	}
 
 	bool Task::on_button_press_event(GdkEventButton *event)
@@ -102,23 +111,27 @@ namespace gzz {
 	void Task::on_clicked()
 	{
 		if(m_wnck_windows.size() == 1){
-			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				      << " entering 1 window " << std::endl;
 			if(!m_wnck_window) return;
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				      << "\t past return m_wnck_window == " << m_wnck_window << std::endl;
+			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				      << "\t m_wnck_window->get_name() == " << m_wnck_window->get_name() << std::endl;*/
 			if(m_wnck_window->is_minimized()){
 				m_wnck_window->unminimize(gtk_get_current_event_time());
 			}else if(m_wnck_window->is_below()){
 				m_wnck_window->unmake_below();
 			}else if(m_wnck_window->is_above()){
 				//m_wnck_window->unmake_above();
-				std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 					      << " minimizing " << std::endl;
 				m_wnck_window->minimize();
 			}else{
 				m_wnck_window->activate(gtk_get_current_event_time());
 			}
 		}else if(m_wnck_windows.size() > 1){
-			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				      << " entering > 1 window " << std::endl;
 			if(m_menu){
 				std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
@@ -165,14 +178,14 @@ namespace gzz {
 
 	void Task::remove_window(Wnck::Window* win)
 	{
-		/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				  << " entering win == " << win << std::endl;*/
         auto pos = find(m_wnck_windows.begin(), m_wnck_windows.end(), win);
 		if(pos == m_wnck_windows.end()){
-		    /*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+		    /*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				      << " win not found win == " << win << "\t at *pos == " << *pos << std::endl;*/
 		}else{
-		    /*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+		    /*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				      << " erasing win == " << win << "\t at *pos == " << *pos << std::endl;*/
 			m_wnck_windows.erase(pos);
 		}
@@ -228,25 +241,54 @@ namespace gzz {
 
 	void Task::refresh_state()
 	{
-		/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					<< " refreshhing Task " << std::endl;*/
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					<< " refreshhing Task: m_constructed == " << std::boolalpha 
+			        << m_constructed << std::endl;*/
 		if(m_wnck_windows.size() == 1){
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					  << " m_arrow == " << m_arrow << std::endl;*/
 			if(m_arrow){
 				m_hbox->remove(*m_arrow);
 				delete m_arrow;
 				m_arrow = 0;
 			}
 			if(!m_wnck_window){ 
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << " m_menu_right_click == " << m_menu_right_click << std::endl;*/
 				m_wnck_window = m_wnck_windows[0];
 				if(m_menu_right_click){
 					delete m_menu_right_click;
 				}
 				m_menu_right_click = new Wnck::ActionMenu(*m_wnck_window);
 			}
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					  << " m_wnck_window->has_icon_name() == " << std::boolalpha 
+				      << m_wnck_window->has_icon_name() << std::endl;
+			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					  << " m_image == " << m_image << std::endl;*/
+			/*if(!m_image){
+				m_image = 
+			}*/
+			/*if(m_wnck_window->has_icon_name()){
+				m_image->set(m_wnck_window->get_icon());
+			}else{
+				m_image->set(Gtk::StockID("gtk-missing-image"), Gtk::IconSize(32));
+			}*/
 			m_image->set(m_wnck_window->get_icon());
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << " m_wnck_window->has_name() == " << std::boolalpha 
+					      << m_wnck_window->has_name() << std::endl;*/
 			if(m_wnck_window->is_minimized()){
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << " m_wnck_window->has_name() == " << std::boolalpha 
+					      << m_wnck_window->has_name() << std::endl;*/
 				m_label->set_text("[ " + m_wnck_window->get_name() + " ]");
 			}else{
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << " about to look at name" << std::endl;
+				std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << " m_wnck_window->has_name() == " << std::boolalpha 
+					      << m_wnck_window->has_name() << std::endl;*/
 				m_label->set_text(m_wnck_window->get_name());
 			}
 		}else if(m_wnck_windows.size() > 1){
@@ -257,6 +299,8 @@ namespace gzz {
 				m_arrow->show();
 			}
 			if(!m_wnck_classgroup) return;
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					  << " got here" << std::endl;*/
 			m_image->set(m_wnck_classgroup->get_icon());
 			m_label->set_text(m_wnck_classgroup->get_name());
 		}else{
@@ -290,6 +334,26 @@ namespace gzz {
 	Wnck::ClassGroup* Task::get_class_group()
 	{
 		return m_wnck_classgroup;
+	}
+
+	void Task::set_fontdescription(Pango::FontDescription fd)
+	{
+		if(m_label) m_label->override_font(fd);
+	}
+
+	void Task::set_colour(Gdk::RGBA rgba)
+	{
+		if(m_label) m_label->override_color(rgba);
+	}
+
+	bool Task::get_constructed() const
+	{
+		return m_constructed;
+	}
+
+	bool Task::get_destructed() const
+	{
+		return m_destructed;
 	}
 	
 

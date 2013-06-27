@@ -47,6 +47,14 @@ namespace gzz {
 			void refresh_state();
 			bool contains(Wnck::Window* win);
 			Wnck::ClassGroup* get_class_group();
+			//Pango::FontDescription get_fontdescription() const;
+			void set_fontdescription(Pango::FontDescription fd);
+			//Gdk::RGBA get_colour() const;
+			void set_colour(Gdk::RGBA rgba);
+
+			// special //
+			bool get_constructed() const;
+			bool get_destructed() const;
 			
 			// signal handling //
 			type_signal_right_clicked signal_right_clicked();
@@ -61,6 +69,8 @@ namespace gzz {
 			Gtk::Arrow *m_arrow = 0;
 			Wnck::ActionMenu* m_menu_right_click = 0;
 			Gtk::Menu* m_menu = 0;
+			bool m_constructed = false;
+			bool m_destructed = false;
 
 			virtual bool on_button_press_event(GdkEventButton *event);
 			virtual void on_clicked();

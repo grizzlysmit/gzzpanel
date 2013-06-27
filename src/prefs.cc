@@ -24,7 +24,10 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
   : Gtk::Dialog(cobject), m_builder(builder), 
     m_fontbuttonPrefesGlobal(nullptr), m_spinbuttonMinTaskWidth(nullptr), 
     m_entryTimeFormatTopln(nullptr), m_entryTimeFormatBottomln(nullptr), 
-    m_scrolledwindowPrefsClockHelp(nullptr), m_lvtPrefsClockHelp(nullptr)
+    m_scrolledwindowPrefsClockHelp(nullptr), m_lvtPrefsClockHelp(nullptr), 
+    m_comboboxtextFontWeight(nullptr), m_colorbuttonPrefsFontColour(nullptr), 
+    m_fontbuttonClock(nullptr), m_comboboxtextClockFontWeight(nullptr), 
+    m_colorbuttonClockFontColour(nullptr)
 {
 	// m_fontbuttonPrefesGlobal //
 	m_builder->get_widget("fontbuttonPrefesGlobal", m_fontbuttonPrefesGlobal);
@@ -32,12 +35,26 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 		//m_fontbuttonPrefesGlobal->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
 		m_fontbuttonPrefesGlobal->set_use_font(true);
 	}
+	// m_comboboxtextFontWeight //
+	m_builder->get_widget("comboboxtextFontWeight", m_comboboxtextFontWeight);
+	if(m_comboboxtextFontWeight){
+		//m_comboboxtextFontWeight->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+	}
+	// m_colorbuttonPrefsFontColour //
+	m_builder->get_widget("colorbuttonPrefsFontColour", m_colorbuttonPrefsFontColour);
+	if(m_colorbuttonPrefsFontColour){
+		//m_colorbuttonPrefsFontColour->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+	}
+
+	// Taskbar stuff //
 	// m_spinbuttonMinTaskWidth //
 	m_builder->get_widget("spinbuttonMinTaskWidth", m_spinbuttonMinTaskWidth);
 	if(m_spinbuttonMinTaskWidth){
 		//m_spinbuttonMinTaskWidth->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
 		m_adjustmentMinTaskWidth = m_spinbuttonMinTaskWidth->get_adjustment();
 	}
+
+	// clock stuff //
 	// m_entryTimeFormatTopln //
 	m_builder->get_widget("entryTimeFormatTopln", m_entryTimeFormatTopln);
 	if(m_entryTimeFormatTopln){
@@ -156,6 +173,22 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 		row = m_lvtPrefsClockHelp->append("%%");
 		m_lvtPrefsClockHelp->set_text(row, 1, "A literal '%' character.");
 	}
+	// m_fontbuttonClock //
+	m_builder->get_widget("fontbuttonClock", m_fontbuttonClock);
+	if(m_fontbuttonClock){
+		//m_fontbuttonClock->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+	}
+	// m_comboboxtextClockFontWeight //
+	m_builder->get_widget("comboboxtextClockFontWeight", m_comboboxtextClockFontWeight);
+	if(m_comboboxtextClockFontWeight){
+		//m_comboboxtextClockFontWeight->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+	}
+	// m_colorbuttonClockFontColour //
+	m_builder->get_widget("colorbuttonClockFontColour", m_colorbuttonClockFontColour);
+	if(m_colorbuttonClockFontColour){
+		//m_colorbuttonClockFontColour->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+	}
+	set_keep_above(true);
 }
 
 Prefs::~Prefs()
@@ -202,5 +235,186 @@ void Prefs::set_entryTimeFormatBottomln(Glib::ustring format)
 {
 	m_entryTimeFormatBottomln->set_text(format);
 }
+
+Pango::Weight Prefs::get_font_weight() const
+{
+	Glib::ustring weight = m_comboboxtextFontWeight->get_active_text();
+	if(weight == "ultralight"){
+		return Pango::WEIGHT_ULTRALIGHT;
+	}else if(weight == "light"){
+		return Pango::WEIGHT_LIGHT;
+	}else if(weight == "normal"){
+		return Pango::WEIGHT_NORMAL;	
+	}else if(weight == "semibold"){
+		return Pango::WEIGHT_SEMIBOLD; 	
+	}else if(weight == "bold"){
+		return Pango::WEIGHT_BOLD; 	
+	}else if(weight == "ultrabold"){
+		return Pango::WEIGHT_ULTRABOLD; 	
+	}else if(weight == "heavey"){
+		return Pango::WEIGHT_HEAVY; 	
+	}else{
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
+		return static_cast<Pango::Weight>(0);
+	}
+}
+
+void Prefs::set_font_weight(Pango::Weight weight)
+{
+	switch(weight){
+		case(0):
+		{
+			m_comboboxtextFontWeight->set_active_id("None");
+			break;
+		}
+		case(Pango::WEIGHT_ULTRALIGHT):
+		{
+			m_comboboxtextFontWeight->set_active_id("ultralight");
+			break;
+		}
+		case(Pango::WEIGHT_LIGHT):
+		{
+			m_comboboxtextFontWeight->set_active_id("light");
+			break;
+		}
+		case(Pango::WEIGHT_NORMAL):
+		{
+			m_comboboxtextFontWeight->set_active_id("normal");
+			break;
+		}
+		case(Pango::WEIGHT_SEMIBOLD):
+		{
+			m_comboboxtextFontWeight->set_active_id("semibold");
+			break;
+		}
+		case(Pango::WEIGHT_BOLD):
+		{
+			m_comboboxtextFontWeight->set_active_id("bold");
+			break;
+		}
+		case(Pango::WEIGHT_ULTRABOLD):
+		{
+			m_comboboxtextFontWeight->set_active_id("ultrabold");
+			break;
+		}
+		case(Pango::WEIGHT_HEAVY):
+		{
+			m_comboboxtextFontWeight->set_active_id("heavy");
+			break;
+		}
+	} // switch(weight) //
+} //  void Prefs::set_font_weight(Pango::Weight weight) //
+
+Gdk::RGBA Prefs::get_global_colour() const
+{
+	return m_colorbuttonPrefsFontColour->get_rgba();
+}
+
+void Prefs::set_global_colour(Gdk::RGBA colour)
+{
+	m_colorbuttonPrefsFontColour->set_rgba(colour);
+}
+
+Glib::ustring Prefs::get_clock_font_name() const
+{
+	return m_fontbuttonClock->get_font_name();
+}
+
+void Prefs::set_clock_font_name(Glib::ustring font)
+{
+	m_fontbuttonClock->set_font_name(font);
+}
+
+Pango::Weight Prefs::get_clock_font_weight() const
+{
+	Glib::ustring weight = m_comboboxtextClockFontWeight->get_active_text();
+	if(weight == "ultralight"){
+		return Pango::WEIGHT_ULTRALIGHT;
+	}else if(weight == "light"){
+		return Pango::WEIGHT_LIGHT;
+	}else if(weight == "normal"){
+		return Pango::WEIGHT_NORMAL;	
+	}else if(weight == "semibold"){
+		return Pango::WEIGHT_SEMIBOLD; 	
+	}else if(weight == "bold"){
+		return Pango::WEIGHT_BOLD; 	
+	}else if(weight == "ultrabold"){
+		return Pango::WEIGHT_ULTRABOLD; 	
+	}else if(weight == "heavey"){
+		return Pango::WEIGHT_HEAVY; 	
+	}else{
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
+		return static_cast<Pango::Weight>(0);
+	}
+}
+
+void Prefs::set_clock_font_weight(Pango::Weight weight)
+{
+	switch(weight){
+		case(0):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("None");
+			break;
+		}
+		case(Pango::WEIGHT_ULTRALIGHT):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("ultralight");
+			break;
+		}
+		case(Pango::WEIGHT_LIGHT):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("light");
+			break;
+		}
+		case(Pango::WEIGHT_NORMAL):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("normal");
+			break;
+		}
+		case(Pango::WEIGHT_SEMIBOLD):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("semibold");
+			break;
+		}
+		case(Pango::WEIGHT_BOLD):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("bold");
+			break;
+		}
+		case(Pango::WEIGHT_ULTRABOLD):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("ultrabold");
+			break;
+		}
+		case(Pango::WEIGHT_HEAVY):
+		{
+			m_comboboxtextClockFontWeight->set_active_id("heavy");
+			break;
+		}
+		default:
+		{
+			m_comboboxtextClockFontWeight->set_active_id("None");
+		}
+	} // switch(weight) //
+} //  void Prefs::set_clock_font_weight(Pango::Weight weight) //
+
+Gdk::RGBA Prefs::get_clock_colour() const
+{
+	return m_colorbuttonClockFontColour->get_rgba();
+}
+
+void Prefs::set_clock_colour(Gdk::RGBA colour)
+{
+	m_colorbuttonClockFontColour->set_rgba(colour);
+}
+
+
+
+
+
+
+
+
+
 
 

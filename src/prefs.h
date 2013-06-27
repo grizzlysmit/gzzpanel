@@ -42,6 +42,16 @@ class Prefs: public Gtk::Dialog
 		void set_entryTimeFormatTopln(Glib::ustring format);
 		Glib::ustring get_entryTimeFormatBottomln() const;
 		void set_entryTimeFormatBottomln(Glib::ustring format);
+		Pango::Weight get_font_weight() const;
+		void set_font_weight(Pango::Weight weight);
+		Gdk::RGBA get_global_colour() const;
+		void set_global_colour(Gdk::RGBA colour);
+		Glib::ustring get_clock_font_name() const;
+		void set_clock_font_name(Glib::ustring font);
+		Pango::Weight get_clock_font_weight() const;
+		void set_clock_font_weight(Pango::Weight weight);
+		Gdk::RGBA get_clock_colour() const;
+		void set_clock_colour(Gdk::RGBA colour);
 	protected:
 		const Glib::RefPtr<Gtk::Builder>& m_builder;
 
@@ -53,6 +63,11 @@ class Prefs: public Gtk::Dialog
 		Gtk::Entry *m_entryTimeFormatBottomln;
 		Gtk::ScrolledWindow *m_scrolledwindowPrefsClockHelp;
 		LVT* m_lvtPrefsClockHelp;
+		Gtk::ComboBoxText* m_comboboxtextFontWeight;
+		Gtk::ColorButton* m_colorbuttonPrefsFontColour;
+		Gtk::FontButton* m_fontbuttonClock;
+		Gtk::ComboBoxText* m_comboboxtextClockFontWeight;
+		Gtk::ColorButton* m_colorbuttonClockFontColour;
 	private:
 
 };

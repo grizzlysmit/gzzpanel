@@ -111,7 +111,7 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		//Glib::ustring data = "WnckTasklist {color: #ff0000;font: Lucida Grande 6}";
 		Glib::ustring data = "GtkWindow {color: #000000;font: Lucida Grande 8}";
 		auto css = Gtk::CssProvider::create();
-		if(not css->load_from_data(data)) {
+		if(!css->load_from_data(data)) {
 			std::cerr << "Failed to load css" << std::endl;
 			std::exit(1);
 		}
@@ -232,6 +232,7 @@ void Main_window::on_popup_menu_position(int& x, int& y, bool& push_in)
 
 bool Main_window::on_timeout()
 {
+	//std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t entering" << std::endl;
 	time_t rawtime;
 	struct tm * timeinfo;
 	char buffer[80];
@@ -243,7 +244,9 @@ bool Main_window::on_timeout()
 	m_labelClock->set_text(buffer);
 	strftime(buffer, 80, m_dateformat.c_str(), timeinfo);
 	m_labelDate->set_text(buffer);
+	//std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t about to refresh taskbar" << std::endl;
 	m_taskbar->refreshbar();
+	//std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t leaving now" << std::endl;
 	return true;
 }
 
@@ -285,17 +288,31 @@ void Main_window::on_menuitem_Compiz()
 
 void Main_window::on_menuitem_Prefrences()
 {
-	//m_dialogPreferences->set_use_font(true);
-	Glib::RefPtr<Pango::Context> pc = get_pango_context();
-	Pango::FontDescription oldfd = pc->get_font_description();
-	//Glib::ustring fname = pango_font_description_to_string(oldfd.gobj());
-	Glib::ustring fname = oldfd.to_string();
-	m_dialogPreferences->set_font_name(fname);
-	m_dialogPreferences->set_min_button_size(m_taskbar->get_min_button_size());
-	m_dialogPreferences->set_entryTimeFormatTopln(m_clockformat);
-	m_dialogPreferences->set_entryTimeFormatBottomln(m_dateformat);
+    //////////////////////////////////////////////////////////////////////////////
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@//
+	//@@@                                                                    @@@//
+	//@@@           Load prefs from config file; or use defaults             @@@//
+	//@@@                                                                    @@@//
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@//
+    //////////////////////////////////////////////////////////////////////////////
+	boost::property_tree::ptree pt = get_config();
+	m_dialogPreferences->set_font_name(pt.get("global.font_name", "Lucida Grande 10"));
+	Gdk::RGBA rgba(pt.get("global.font_colour", "#00FF00"));
+	m_dialogPreferences->set_global_colour(rgba);
+	m_dialogPreferences->set_font_weight(static_cast<Pango::Weight>(pt.get("global.font_weight", 200)));
+	m_dialogPreferences->set_min_button_size(pt.get("toolbar.min_button_size", m_taskbar->get_min_button_size()));
+	m_dialogPreferences->set_entryTimeFormatTopln(pt.get("clock.timeformat", m_clockformat));
+	m_dialogPreferences->set_entryTimeFormatBottomln(pt.get("clock.dateformat", m_dateformat));
+	m_dialogPreferences->set_clock_font_name(pt.get("clock.font_name", m_clockfontname));
+	m_dialogPreferences->set_clock_font_weight(static_cast<Pango::Weight>(pt.get("clock.font_weight", static_cast<int>(m_clock_font_weight))));
+	Gdk::RGBA rgba_clock(pt.get("clock.font_colour", "#FF0000"));
+	m_dialogPreferences->set_clock_colour(rgba_clock);
+
+	//  run dialog   //
 	int res = m_dialogPreferences->run();
 	m_dialogPreferences->hide();
+
+	// deal with results //
 	if(res){
 		Glib::ustring fontname = m_dialogPreferences->get_font_name();
 		std::cout << "Ok clicked. fontname == " << fontname << std::endl;
@@ -305,11 +322,48 @@ void Main_window::on_menuitem_Prefrences()
 		std::cout << "Ok clicked. fd.get_style() == " << fd.get_style() << std::endl;
 		std::cout << "Ok clicked. fd.to_string() == " << fd.to_string() << std::endl;
 		std::cout << "Ok clicked. fd.get_size() == " << fd.get_size()/1000 << std::endl;
-		m_taskbar->override_font(fd);
-		override_font(fd);
-		m_taskbar->set_min_button_size(m_dialogPreferences->get_min_button_size());
+		Gdk::RGBA rgba = m_dialogPreferences->get_global_colour();
+		Pango::Weight global_weight = m_dialogPreferences->get_font_weight();
+		int min_button_size = m_dialogPreferences->get_min_button_size();
 		m_clockformat = m_dialogPreferences->get_entryTimeFormatTopln();
 		m_dateformat = m_dialogPreferences->get_entryTimeFormatBottomln();
+		m_clock_font_weight = m_dialogPreferences->get_clock_font_weight();
+		Gdk::RGBA clock_font_colour = m_dialogPreferences->get_clock_colour();
+		// put in new tree //
+		boost::property_tree::ptree pt;
+		pt.put("global.font_name", fontname);
+		pt.put("global.font_colour", rgba.to_string());
+		pt.put("global.font_weight", static_cast<int>(global_weight));
+		pt.put("toolbar.min_button_size", min_button_size);
+		pt.put("clock.timeformat", m_clockformat);
+		pt.put("clock.dateformat", m_dateformat);
+		pt.put("clock.font_name", m_clockfontname);
+		pt.put("clock.font_weight", static_cast<int>(m_clock_font_weight));
+		pt.put("clock.font_colour", clock_font_colour.to_string());
+		// write to inifile //
+		set_config(pt);
+
+		// apply to widgits //
+		m_taskbar->set_min_button_size(min_button_size);
+		fd.set_weight(global_weight);
+		m_taskbar->set_fontdescription(fd);
+		m_taskbar->override_font(fd);
+		override_font(fd);
+		// font colour //
+		m_taskbar->override_color(rgba);
+		m_taskbar->set_colour(rgba);
+		override_color(rgba);
+
+		// clock //
+		Pango::FontDescription fd_clock(pango_font_description_from_string(m_clockfontname.c_str()));
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+		fd_clock.set_weight(m_clock_font_weight);
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+		m_labelClock->override_font(fd_clock);
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " clock_font_colour.to_string() == " << clock_font_colour.to_string() << std::endl;
+		m_labelClock->override_color(clock_font_colour);
+		m_labelDate->override_font(fd_clock);
+		m_labelDate->override_color(clock_font_colour);
 	}else{
 		std::cout << "Cancel clicked." << std::endl;
 	}
@@ -350,7 +404,7 @@ void Main_window::on_menuitem_RunApp()
 	}
 }
 
-bool Main_window::insure_config_path()
+bool Main_window::insure_config_path() const
 {
 	std::string path = std::getenv("HOME");
 	path += "/.config";
@@ -418,6 +472,101 @@ void Main_window::set_progname(std::string progname)
 {
 	m_progname = progname;
 }
+
+boost::property_tree::ptree Main_window::get_config() const
+{
+	boost::property_tree::ptree pt;
+	if(insure_config_path()){
+		std::string path = std::getenv("HOME");
+		path += "/.config/" + m_progname + "/" + m_progname + ".ini";
+		try {
+			boost::property_tree::ini_parser::read_ini(path, pt);
+		}
+		catch(std::exception& e){
+			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t caught exception:msg: " << e.what() << std::endl;
+		}
+	}
+	return pt;
+}
+
+void Main_window::set_config(boost::property_tree::ptree pt)
+{
+	if(insure_config_path()){
+		std::string path = std::getenv("HOME");
+		path += "/.config/" + m_progname + "/" + m_progname + ".ini";
+		write_ini(path, pt);
+	}
+}
+
+void Main_window::set_up_config_file()
+{
+	if(insure_config_path()){
+		std::string path = std::getenv("HOME");
+		path += "/.config/" + m_progname + "/" + m_progname + ".ini";
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here path == " << path << std::endl;
+		if(!boost::filesystem::exists(path) || (boost::filesystem::is_regular_file(path) && boost::filesystem::is_empty(path))){
+			boost::property_tree::ptree pt;
+			pt.put("global.font_name", "Lucida Grande 10");
+			pt.put("global.font_colour", "#00FF00");
+			pt.put("global.font_weight", 200);
+			pt.put("toolbar.min_button_size", 150);
+			pt.put("clock.timeformat", m_clockformat);
+			pt.put("clock.dateformat", m_dateformat);
+			pt.put("clock.font_name", m_clockfontname);
+			pt.put("clock.font_weight", static_cast<int>(m_clock_font_weight));
+			pt.put("clock.font_colour", "#FF0000");
+			
+			// now write it to the ini file //
+			write_ini(path, pt);
+		}else if(!boost::filesystem::is_regular_file(path)){
+			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here path == " << path << std::endl;
+			// error do something here //
+		}else{
+			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: shouldn't have path == " << path << std::endl;
+		}
+	}else{
+			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t couldn't insure path: " << std::endl;
+	}
+}
+
+void Main_window::apply_defaults()
+{
+	boost::property_tree::ptree pt = get_config();
+	Glib::ustring fontname = pt.get("global.font_name", "Lucida Grande 10");
+	Pango::FontDescription fd(pango_font_description_from_string(fontname.c_str()));
+	Gdk::RGBA rgba(pt.get("global.font_colour", "#00FF00"));
+	Pango::Weight global_weight = static_cast<Pango::Weight>(pt.get("global.font_weight", 300));
+	fd.set_weight(global_weight);
+	int min_button_size = pt.get("toolbar.min_button_size", 150);
+	m_clockformat = pt.get("clock.timeformat", m_clockformat);
+	m_dateformat = pt.get("clock.dateformat", m_dateformat);
+	m_clockfontname = pt.get("clock.font_name", m_clockfontname);
+	m_clock_font_weight = static_cast<Pango::Weight>(pt.get("clock.font_weight", static_cast<int>(m_clock_font_weight)));
+	Gdk::RGBA clock_font_colour(pt.get("clock.font_colour", "#FF0000"));
+	// apply to widgits //
+	m_taskbar->set_min_button_size(min_button_size);
+	fd.set_weight(global_weight);
+	m_taskbar->set_fontdescription(fd);
+	m_taskbar->override_font(fd);
+	override_font(fd);
+	// font colour //
+	m_taskbar->override_color(rgba);
+	m_taskbar->set_colour(rgba);
+	override_color(rgba);
+
+	// clock //
+	Pango::FontDescription fd_clock(pango_font_description_from_string(m_clockfontname.c_str()));
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+	fd_clock.set_weight(m_clock_font_weight);
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+	m_labelClock->override_font(fd_clock);
+	std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " clock_font_colour.to_string() == " << clock_font_colour.to_string() << std::endl;
+	m_labelClock->override_color(clock_font_colour);
+	m_labelDate->override_font(fd_clock);
+	m_labelDate->override_color(clock_font_colour);
+	std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t leaving now" << std::endl;
+}
+
 
 
 

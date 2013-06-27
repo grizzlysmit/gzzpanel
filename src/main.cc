@@ -61,9 +61,11 @@ int main (int argc, char *argv[])
 	builder->get_widget_derived("main_window", main_win);
 
 	main_win->set_progname(basename(argv[0]));
+	main_win->set_up_config_file();
+	main_win->apply_defaults();
 
 
-	if (main_win)
+	if(main_win)
 	{
 		kit.run(*main_win);
 	}
