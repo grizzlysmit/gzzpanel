@@ -20,6 +20,8 @@ INTLTOOL_FILES = intltool-extract.in \
 EXTRA_DIST = $(gzzpaneldoc_DATA) \
 	$(INTLTOOL_FILES)
 
+AM_CXXFLAGS = -std=c++11 
+
 DISTCLEANFILES = intltool-extract \
 	intltool-merge \
 	intltool-update \

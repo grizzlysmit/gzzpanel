@@ -110,6 +110,7 @@ class Main_window: public Gtk::Window
 		bool save_cmd_history(std::vector<RunApp::CmdHist> history);
 		boost::property_tree::ptree get_config() const;
 		void set_config(boost::property_tree::ptree pt);
+		Glib::ustring quoted(Glib::ustring s) const;
 	private:
 
 };

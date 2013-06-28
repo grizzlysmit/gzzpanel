@@ -278,12 +278,12 @@ GdkPixbuf* Main_window::on_load_icon(const Glib::ustring& icon_name, int size, u
 
 void Main_window::on_menuitem_Unity()
 {
-	system("/usr/bin/unity&");
+	int result = system("/usr/bin/unity&");
 }
 
 void Main_window::on_menuitem_Compiz()
 {
-	system("/usr/bin/compiz --replace&");
+	int result = system("/usr/bin/compiz --replace&");
 }
 
 void Main_window::on_menuitem_Prefrences()
@@ -378,6 +378,10 @@ void Main_window::on_menuitem_RunApp()
 	m_dialogRunApplication->hide();
 	if(res){
 		Glib::ustring cmd = m_dialogRunApplication->get_entry_text();
+		auto pos = cmd.find_first_not_of(" \n\r\t\v");
+		if(pos == Glib::ustring::npos){ 
+			return; // empty string //
+		}
 		RunApp::CmdHist cmd_hist;
 		time_t rawtime;
 		struct tm* timeinfo;
@@ -393,10 +397,11 @@ void Main_window::on_menuitem_RunApp()
 		history.insert(history.begin(), cmd_hist);
 		save_cmd_history(history);
 		if(cmd_hist.used_term){
-			Glib::ustring command = "gnome-terminal --execute " + cmd;
-			system((command + " &").c_str());
+			Glib::ustring command = "gnome-terminal --title=\"" + this->quoted(cmd) + "\" --execute " + cmd;
+			std::cout << "command == " << command << std::endl;
+			int result = system((command + " &").c_str());
 		}else{
-			system((cmd + " &").c_str());
+			int result = system((cmd + " &").c_str());
 		}
 		std::cout << "Execute clicked." << std::endl;
 	}else{
@@ -565,6 +570,19 @@ void Main_window::apply_defaults()
 	m_labelDate->override_font(fd_clock);
 	m_labelDate->override_color(clock_font_colour);
 	std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t leaving now" << std::endl;
+}
+
+Glib::ustring Main_window::quoted(Glib::ustring s) const
+{
+    Glib::ustring result;
+	auto pos = s.find_first_of("$\\\"");;
+	while(pos != Glib::ustring::npos){
+		result += s.substr(0, pos) + "\\" + s[pos];
+		s       = s.substr(pos + 1);
+		pos = s.find_first_of("$\\\"");
+	}
+	result += s;
+	return result;
 }
 
 
