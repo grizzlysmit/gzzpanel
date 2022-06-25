@@ -83,7 +83,7 @@ const std::vector<int> Wnck::Tasklist::get_size_hint_list()
 {
 	int n_elements;
 	const int *res = wnck_tasklist_get_size_hint_list(reinterpret_cast<WnckTasklist*>(gobj()), &n_elements);
-	std::cout << __FILE__ << '[' << __LINE__ << "] n_elements == " << n_elements << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] n_elements == " << n_elements << std::endl;
 	std::vector<int> result;
 	for(int i = 0; i < n_elements; i++){
 		result.insert(result.end(), res[i]);
@@ -134,27 +134,27 @@ void Wnck::Tasklist::on_size_allocate(Gtk::Allocation& allocation)
 	//we might get more)
 
 	//Use the offered allocation for this container:
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 	m_signal_allocation.emit(allocation);
 	set_allocation(allocation);
 }
 
 Wnck::Tasklist::type_signal_allocation Wnck::Tasklist::signal_allocation()
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 	return m_signal_allocation;
 }
 
 void Wnck::Tasklist::on_map()
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 	//Call base class:
 	Gtk::Container::on_map();
 }
 
 void Wnck::Tasklist::on_unmap()
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 	//Call base class:
 	Gtk::Container::on_unmap();
 }
@@ -163,21 +163,21 @@ void Wnck::Tasklist::on_realize()
 {
 	//Do not call base class Gtk::Container::on_realize().
 	//It's intended only for Containers that set_has_window(false).
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
-	std::cout << __FILE__ << '[' << __LINE__ << "] get_width() == " << get_width() << std::endl;
-	std::cout << __FILE__ << '[' << __LINE__ << "] get_height() == " << get_height() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] get_width() == " << get_width() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] get_height() == " << get_height() << std::endl;
 
 	Gtk::Container::on_realize();
 	set_realized();
-	std::cout << __FILE__ << '[' << __LINE__ << "] get_width() == " << get_width() << std::endl;
-	std::cout << __FILE__ << '[' << __LINE__ << "] get_height() == " << get_height() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] get_width() == " << get_width() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] get_height() == " << get_height() << std::endl;
 
 }
 
 void Wnck::Tasklist::on_unrealize()
 {
 	//m_refGdkWindow.reset();
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 
 
 	//Call base class:
@@ -239,7 +239,7 @@ namespace Wnck {
 		BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
 		CppClassParent::class_init_function(klass, class_data);
 
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 
 		//reinterpret_cast<CppClassParent::CppClassParent::BaseClassType*>(klass)->size_allocate = &size_allocate_callback;
 		//klass->orientation_changed = &orientation_changed_callback;
@@ -262,7 +262,7 @@ namespace Wnck {
 		:
 		Gtk::Container(construct_params)
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		wnck_tasklist_set_icon_loader(reinterpret_cast<WnckTasklist*>(gobj()),
 		                              load_icon_func_thunk, this, free_data_func_thunk);
 	}
@@ -271,14 +271,14 @@ namespace Wnck {
 		:
 	Gtk::Container((GtkContainer*)(castitem))
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		wnck_tasklist_set_icon_loader(reinterpret_cast<WnckTasklist*>(gobj()),
 		                              load_icon_func_thunk, this, free_data_func_thunk);
 	}
 
 	Tasklist::~Tasklist()
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		destroy_();
 	}
 
@@ -286,14 +286,14 @@ namespace Wnck {
 
 	GType Tasklist::get_type()
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		return tasklist_class_.init().get_type();
 	}
 
 
 	GType Tasklist::get_base_type()
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		return wnck_tasklist_get_type();
 	}
 
@@ -304,7 +304,7 @@ namespace Wnck {
 		Glib::ObjectBase(0),
 		Gtk::Container(Glib::ConstructParams(tasklist_class_.init()))
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		wnck_tasklist_set_icon_loader(reinterpret_cast<WnckTasklist*>(gobj()),
 		                              load_icon_func_thunk, this, free_data_func_thunk);
 	}
@@ -499,7 +499,7 @@ namespace Wnck {
 
 	void Tasklist_Class::size_allocate_callback(GtkWidget* self, GdkRectangle* p0)
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 		Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
 		                                                                  Glib::ObjectBase::_get_current_wrapper((GObject*)self));
 
@@ -537,7 +537,7 @@ namespace Wnck {
 
 		// Call the original underlying C function:
 		if(base && base->size_allocate){
-			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
+			//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << std::endl;
 			(*base->size_allocate)(self, p0);
 		}
 	}

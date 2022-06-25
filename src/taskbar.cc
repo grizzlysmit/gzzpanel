@@ -189,8 +189,8 @@ namespace gzz {
 					Task* task = m_mappings[win];
 					task->remove_window(win);
 					if(task->count() == 0){
-						std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-							<< " deleting Task " << std::endl;
+						/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+							<< " deleting Task " << std::endl;*/
 						remove(*task);
 						delete task;
 					}
@@ -225,8 +225,8 @@ namespace gzz {
 
 	void Taskbar::on_showing_desktop_changed()
 	{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				      << " got here " << std::endl;
+		/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				      << " got here " << std::endl;*/
 		clearbar();
 		refreshbar();
 	}
@@ -263,16 +263,16 @@ namespace gzz {
 
 	void Taskbar::on_widow_closed(Wnck::Window* win)
 	{
-		std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				          << " entering: win == " << win << std::endl;
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				          << " entering: win == " << win << std::endl;*/
 		Task* task = nullptr;
 		Wnck::ClassGroup *class_group = win->get_class_group();
-		std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				          << " entering: class_group == " << class_group << std::endl;
-		if(class_group){
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				          << " entering: class_group == " << class_group << std::endl;*/
+		/*if(class_group){
 			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				      << " entering: class_group->gobj() == " << class_group->gobj() << std::endl;
-		}
+		}*/
 		if(m_mappings.find(win) != m_mappings.end()){
 			task = m_mappings[win];
 		}else if(class_group && m_class_group_mappings.find(class_group->gobj()) != m_class_group_mappings.end()){
@@ -286,28 +286,28 @@ namespace gzz {
 			}
 			if(!class_group) class_group = task->get_class_group();
 		}
-		std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				          << " removing: win == " << win << std::endl;
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				          << " removing: win == " << win << std::endl;*/
 		task->remove_window(win);
 		if(task->count() == 0){
-			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				          << " deleting Task " << std::endl;
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				          << " deleting Task " << std::endl;*/
 			remove(*task);
 			delete task;
 			if(m_mappings.find(win) != m_mappings.end()){
-				std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					<< " removing  " << win->get_name() << " from m_mappings" << std::endl;
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					<< " removing  " << win->get_name() << " from m_mappings" << std::endl;*/
 				m_mappings.erase(win);
 			}else if(class_group && m_class_group_mappings.find(class_group->gobj()) != m_class_group_mappings.end()){
-				std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					<< " removing  " << class_group->get_name() << " from m_class_group_mappings" << std::endl;
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					<< " removing  " << class_group->get_name() << " from m_class_group_mappings" << std::endl;*/
 				m_class_group_mappings.erase(class_group->gobj());
 			}else{
 				erase_task_from_class_group_mappings_by_window(win);
 			}
 		}
-		std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				  << " exiting " << std::endl;
+		/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				  << " exiting " << std::endl;*/
 	}
 
 	void Taskbar::on_task_size_allocate(Gtk::Allocation& allocation, Task* task)
@@ -318,12 +318,12 @@ namespace gzz {
 		if(!m_min_buttons_too_small){
 			int m = task->count();
 			if(m > 1){
-			    std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				          << "\t m  == " << m << std::endl;
+			    /*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				          << "\t m  == " << m << std::endl;*/
 				m_buttons_can_expand = m_buttons_can_expand 
 					                       || ((get_children().size())*(allocation.get_width() - m_min_button_size) >= (m - 1)*(m_min_button_size + get_spacing()));
-				std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					      << "\t done caculating resize : m_buttons_can_expand  == " << std::boolalpha << m_buttons_can_expand << std::endl;
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << "\t done caculating resize : m_buttons_can_expand  == " << std::boolalpha << m_buttons_can_expand << std::endl;*/
 			}
 		}
 	}
@@ -401,12 +401,12 @@ namespace gzz {
 			if(p.second->count() < mincount){
 				mincount = p.second->count();
 				min_class_group  = p.first;
-				std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					      << "\t found new min : min_class_group  == " << min_class_group << "\t mincount == " << mincount << std::endl;
+				/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << "\t found new min : min_class_group  == " << min_class_group << "\t mincount == " << mincount << std::endl;*/
 			}
 		}
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				  << "\t done caculating min:\t min_class_group  == " << min_class_group << "\t mincount == " << mincount << std::endl;
+		/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				  << "\t done caculating min:\t min_class_group  == " << min_class_group << "\t mincount == " << mincount << std::endl;*/
 		return min_class_group;
 	}
 

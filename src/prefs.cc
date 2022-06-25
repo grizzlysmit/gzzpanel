@@ -27,7 +27,10 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
     m_scrolledwindowPrefsClockHelp(nullptr), m_lvtPrefsClockHelp(nullptr), 
     m_comboboxtextFontWeight(nullptr), m_colorbuttonPrefsFontColour(nullptr), 
     m_fontbuttonClock(nullptr), m_comboboxtextClockFontWeight(nullptr), 
-    m_colorbuttonClockFontColour(nullptr)
+    m_colorbuttonClockFontColour(nullptr), m_spinbuttonHistoryLimit(nullptr), 
+    m_adjustmentHistoryLimit(nullptr), m_spinbuttonDeltaX(nullptr), 
+    m_spinbuttonDeltaClearance(nullptr), m_fontbuttonTaskbar(nullptr), 
+    m_comboboxtextFontWeightTaskbar(nullptr), m_colorbuttonFontColourTaskbar(nullptr)
 {
 	// m_fontbuttonPrefesGlobal //
 	m_builder->get_widget("fontbuttonPrefesGlobal", m_fontbuttonPrefesGlobal);
@@ -52,6 +55,22 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 	if(m_spinbuttonMinTaskWidth){
 		//m_spinbuttonMinTaskWidth->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
 		m_adjustmentMinTaskWidth = m_spinbuttonMinTaskWidth->get_adjustment();
+	}
+	// m_fontbuttonTaskbar //
+	m_builder->get_widget("fontbuttonTaskbar", m_fontbuttonTaskbar);
+	if(m_fontbuttonTaskbar){
+		//m_fontbuttonTaskbar->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+		m_fontbuttonTaskbar->set_use_font(true);
+	}
+	// m_comboboxtextFontWeightTaskbar //
+	m_builder->get_widget("comboboxtextFontWeightTaskbar", m_comboboxtextFontWeightTaskbar);
+	if(m_comboboxtextFontWeightTaskbar){
+		//m_comboboxtextFontWeightTaskbar->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+	}
+	// m_colorbuttonFontColourTaskbar //
+	m_builder->get_widget("colorbuttonFontColourTaskbar", m_colorbuttonFontColourTaskbar);
+	if(m_colorbuttonFontColourTaskbar){
+		//m_colorbuttonFontColourTaskbar->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
 	}
 
 	// clock stuff //
@@ -172,6 +191,7 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 		m_lvtPrefsClockHelp->set_text(row, 1, "The date and time in date(1) format.");
 		row = m_lvtPrefsClockHelp->append("%%");
 		m_lvtPrefsClockHelp->set_text(row, 1, "A literal '%' character.");
+		m_lvtPrefsClockHelp->set_tooltip_markup("<b>Clock Format Help</b>\n<i>Format chars and their meaning</i>");
 	}
 	// m_fontbuttonClock //
 	m_builder->get_widget("fontbuttonClock", m_fontbuttonClock);
@@ -188,6 +208,26 @@ Prefs::Prefs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 	if(m_colorbuttonClockFontColour){
 		//m_colorbuttonClockFontColour->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
 	}
+	// m_spinbuttonHistoryLimit //
+	m_builder->get_widget("spinbuttonHistoryLimit", m_spinbuttonHistoryLimit);
+	if(m_spinbuttonHistoryLimit){
+		//m_spinbuttonHistoryLimit->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+		m_adjustmentHistoryLimit = m_spinbuttonHistoryLimit->get_adjustment();
+	}
+	// m_spinbuttonDeltaX //
+	m_builder->get_widget("spinbuttonDeltaX", m_spinbuttonDeltaX);
+	if(m_spinbuttonDeltaX){
+		//m_spinbuttonDeltaX->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+		m_adjustmentDeltaX = m_spinbuttonDeltaX->get_adjustment();
+	}
+	// m_spinbuttonDeltaClearance //
+	m_builder->get_widget("spinbuttonDeltaClearance", m_spinbuttonDeltaClearance);
+	if(m_spinbuttonDeltaClearance){
+		//m_spinbuttonDeltaClearance->signal_clicked().connect( sigc::mem_fun(*this, &Main_window::on_button_Menu) );
+		m_adjustmentDeltaClearance = m_spinbuttonDeltaClearance->get_adjustment();
+	}
+	
+	set_default_size(640, 480);
 	set_keep_above(true);
 }
 
@@ -204,6 +244,16 @@ Glib::ustring Prefs::get_font_name() const
 void Prefs::set_font_name(Glib::ustring font)
 {
 	m_fontbuttonPrefesGlobal->set_font_name(font);
+}
+
+Glib::ustring Prefs::get_taskbar_font_name() const
+{
+	return m_fontbuttonTaskbar->get_font_name();
+}
+
+void Prefs::set_taskbar_font_name(Glib::ustring font)
+{
+	m_fontbuttonTaskbar->set_font_name(font);
 }
 
 int Prefs::get_min_button_size() const
@@ -254,7 +304,7 @@ Pango::Weight Prefs::get_font_weight() const
 	}else if(weight == "heavey"){
 		return Pango::WEIGHT_HEAVY; 	
 	}else{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
 		return static_cast<Pango::Weight>(0);
 	}
 }
@@ -305,6 +355,75 @@ void Prefs::set_font_weight(Pango::Weight weight)
 	} // switch(weight) //
 } //  void Prefs::set_font_weight(Pango::Weight weight) //
 
+Pango::Weight Prefs::get_taskbar_font_weight() const
+{
+	Glib::ustring weight = m_comboboxtextFontWeightTaskbar->get_active_text();
+	if(weight == "ultralight"){
+		return Pango::WEIGHT_ULTRALIGHT;
+	}else if(weight == "light"){
+		return Pango::WEIGHT_LIGHT;
+	}else if(weight == "normal"){
+		return Pango::WEIGHT_NORMAL;	
+	}else if(weight == "semibold"){
+		return Pango::WEIGHT_SEMIBOLD; 	
+	}else if(weight == "bold"){
+		return Pango::WEIGHT_BOLD; 	
+	}else if(weight == "ultrabold"){
+		return Pango::WEIGHT_ULTRABOLD; 	
+	}else if(weight == "heavey"){
+		return Pango::WEIGHT_HEAVY; 	
+	}else{
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
+		return static_cast<Pango::Weight>(0);
+	}
+}
+
+void Prefs::set_taskbar_font_weight(Pango::Weight weight)
+{
+	switch(weight){
+		case(0):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("None");
+			break;
+		}
+		case(Pango::WEIGHT_ULTRALIGHT):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("ultralight");
+			break;
+		}
+		case(Pango::WEIGHT_LIGHT):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("light");
+			break;
+		}
+		case(Pango::WEIGHT_NORMAL):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("normal");
+			break;
+		}
+		case(Pango::WEIGHT_SEMIBOLD):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("semibold");
+			break;
+		}
+		case(Pango::WEIGHT_BOLD):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("bold");
+			break;
+		}
+		case(Pango::WEIGHT_ULTRABOLD):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("ultrabold");
+			break;
+		}
+		case(Pango::WEIGHT_HEAVY):
+		{
+			m_comboboxtextFontWeightTaskbar->set_active_id("heavy");
+			break;
+		}
+	} // switch(weight) //
+} //  void Prefs::set_taskbar_font_weight(Pango::Weight weight) //
+
 Gdk::RGBA Prefs::get_global_colour() const
 {
 	return m_colorbuttonPrefsFontColour->get_rgba();
@@ -313,6 +432,16 @@ Gdk::RGBA Prefs::get_global_colour() const
 void Prefs::set_global_colour(Gdk::RGBA colour)
 {
 	m_colorbuttonPrefsFontColour->set_rgba(colour);
+}
+
+Gdk::RGBA Prefs::get_taskbar_font_colour() const
+{
+	return m_colorbuttonFontColourTaskbar->get_rgba();
+}
+
+void Prefs::set_taskbar_font_colour(Gdk::RGBA colour)
+{
+	m_colorbuttonFontColourTaskbar->set_rgba(colour);
 }
 
 Glib::ustring Prefs::get_clock_font_name() const
@@ -343,7 +472,7 @@ Pango::Weight Prefs::get_clock_font_weight() const
 	}else if(weight == "heavey"){
 		return Pango::WEIGHT_HEAVY; 	
 	}else{
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: weight == " << weight << std::endl;
 		return static_cast<Pango::Weight>(0);
 	}
 }
@@ -406,6 +535,36 @@ Gdk::RGBA Prefs::get_clock_colour() const
 void Prefs::set_clock_colour(Gdk::RGBA colour)
 {
 	m_colorbuttonClockFontColour->set_rgba(colour);
+}
+
+int Prefs::get_HistoryLimit() const
+{
+	return m_adjustmentHistoryLimit->get_value();
+}
+
+void Prefs::set_HistoryLimit(int hl)
+{
+	m_adjustmentHistoryLimit->set_value(hl);
+}
+
+int Prefs::get_DeltaX() const
+{
+	return m_adjustmentDeltaX->get_value();
+}
+
+void Prefs::set_DeltaX(int hl)
+{
+	m_adjustmentDeltaX->set_value(hl);
+}
+
+int Prefs::get_DeltaClearance() const
+{
+	return m_adjustmentDeltaClearance->get_value();
+}
+
+void Prefs::set_DeltaClearance(int hl)
+{
+	m_adjustmentDeltaClearance->set_value(hl);
 }
 
 

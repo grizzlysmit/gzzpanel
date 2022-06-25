@@ -52,6 +52,18 @@ class Prefs: public Gtk::Dialog
 		void set_clock_font_weight(Pango::Weight weight);
 		Gdk::RGBA get_clock_colour() const;
 		void set_clock_colour(Gdk::RGBA colour);
+		int get_HistoryLimit() const;
+		void set_HistoryLimit(int hl);
+		int get_DeltaX() const;
+		void set_DeltaX(int hl);
+		int get_DeltaClearance() const;
+		void set_DeltaClearance(int hl);
+		Glib::ustring get_taskbar_font_name() const;
+		void set_taskbar_font_name(Glib::ustring font);
+		Pango::Weight get_taskbar_font_weight() const;
+		void set_taskbar_font_weight(Pango::Weight weight);
+		Gdk::RGBA get_taskbar_font_colour() const;
+		void set_taskbar_font_colour(Gdk::RGBA colour);
 	protected:
 		const Glib::RefPtr<Gtk::Builder>& m_builder;
 
@@ -68,6 +80,16 @@ class Prefs: public Gtk::Dialog
 		Gtk::FontButton* m_fontbuttonClock;
 		Gtk::ComboBoxText* m_comboboxtextClockFontWeight;
 		Gtk::ColorButton* m_colorbuttonClockFontColour;
+		Gtk::SpinButton* m_spinbuttonHistoryLimit;
+		Glib::RefPtr<Gtk::Adjustment> m_adjustmentHistoryLimit;
+		Gtk::SpinButton* m_spinbuttonDeltaX;
+		Glib::RefPtr<Gtk::Adjustment> m_adjustmentDeltaX;
+		Gtk::SpinButton* m_spinbuttonDeltaClearance;
+		Glib::RefPtr<Gtk::Adjustment> m_adjustmentDeltaClearance;
+		Gtk::FontButton* m_fontbuttonTaskbar;
+		Gtk::ComboBoxText* m_comboboxtextFontWeightTaskbar;
+		Gtk::ColorButton* m_colorbuttonFontColourTaskbar;
+		
 	private:
 
 };

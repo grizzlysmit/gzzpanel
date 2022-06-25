@@ -61,7 +61,7 @@ void RunApp::set_text_items(const std::vector<RunApp::CmdHist>& items)
 {
 	m_comboboxtextRunApplication->remove_all();
 	for(auto item : items){
-		m_comboboxtextRunApplication->append(item.cmd);
+		m_comboboxtextRunApplication->prepend(item.cmd);
 	}
 }
 

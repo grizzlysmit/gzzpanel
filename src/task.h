@@ -80,6 +80,9 @@ namespace gzz {
 			void on_popup_menu_right_click(int& x, int& y, bool& push_in);
 			void on_menu_item_activate(Wnck::Window* win);
 			void on_popup_menu_left_click(int& x, int& y, bool& push_in);
+
+			// utilities //
+			Glib::ustring hmlentities(const Glib::ustring& s) const;
 		private:
 
 	};

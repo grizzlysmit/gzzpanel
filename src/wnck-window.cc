@@ -91,7 +91,7 @@ namespace Wnck {
 			return result;
 		}
 		catch(...){
-			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " got here error caught " << std::endl;
+			//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " got here error caught " << std::endl;
 			return Glib::RefPtr<Gdk::Pixbuf>();
 		}
 		return Glib::RefPtr<Gdk::Pixbuf>();
@@ -107,7 +107,7 @@ namespace Wnck {
 			return result;
 		}
 		catch(...){
-			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " got here error caught " << std::endl;
+			//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " got here error caught " << std::endl;
 			return Glib::RefPtr<Gdk::Pixbuf>();
 		}
 		return Glib::RefPtr<Gdk::Pixbuf>();

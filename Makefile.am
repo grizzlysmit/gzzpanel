@@ -18,9 +18,19 @@ INTLTOOL_FILES = intltool-extract.in \
 	intltool-update.in
 
 EXTRA_DIST = $(gzzpaneldoc_DATA) \
+			 gzzpanel.desktop \
+			 gzzpanel.png \
 	$(INTLTOOL_FILES)
 
-AM_CXXFLAGS = -std=c++11 
+pixmapdir = $(datadir)/pixmaps
+
+pixmap_DATA = gzzpanel.png
+
+
+Applicationsdir = $(datadir)/applications
+Applications_DATA = gzzpanel.desktop
+
+AM_CXXFLAGS = -std=c++17 
 
 DISTCLEANFILES = intltool-extract \
 	intltool-merge \

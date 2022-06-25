@@ -87,6 +87,11 @@ class Main_window: public Gtk::Window
 		int m_history_limit = 256;
 		Glib::ustring m_clockfontname = "Lucida Grande 9";
 		Pango::Weight m_clock_font_weight = Pango::WEIGHT_BOLD;
+		int m_delta_x     = 49;
+		int m_delta_clear = 5;
+		int m_delta_y     = 50;
+		Glib::ustring m_global_font_colour = "#888800";
+		Glib::ustring m_global_fontname = "Lucida Grande 9";
 		
 		// a time out handler  //
 		bool on_timeout();
@@ -111,6 +116,7 @@ class Main_window: public Gtk::Window
 		boost::property_tree::ptree get_config() const;
 		void set_config(boost::property_tree::ptree pt);
 		Glib::ustring quoted(Glib::ustring s) const;
+		void size_pos_and_struts();
 	private:
 
 };

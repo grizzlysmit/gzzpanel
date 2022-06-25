@@ -23,6 +23,7 @@
 #include <gdk/gdkx.h>
 #include <cstdlib>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 #include <fstream>
 #include <algorithm>
 
@@ -38,6 +39,7 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
     m_wnck_screen(new Wnck::Screen), 
     m_counter(0)
 {
+	set_name("GtkWindow");
 	// m_buttonMenu //
 	m_builder->get_widget("buttonMenu", m_buttonMenu);
 	if(m_buttonMenu){
@@ -109,11 +111,19 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		//m_taskbar->set_grouping_limit(4);
 		//m_taskbar->set_button_relief(Gtk::RELIEF_NORMAL);
 		//Glib::ustring data = "WnckTasklist {color: #ff0000;font: Lucida Grande 6}";
-		Glib::ustring data = "GtkWindow {color: #000000;font: Lucida Grande 8}";
+		Glib::ustring data = "GtkWindow {\n    color: #888800;\n    font-family: \"Lucida Grande 8\";\n    font-size: 8pt\n}";
 		auto css = Gtk::CssProvider::create();
-		if(!css->load_from_data(data)) {
-			std::cerr << "Failed to load css" << std::endl;
-			std::exit(1);
+		try{
+			if(!css->load_from_data(data)) {
+				std::cerr << "Failed to load css" << std::endl;
+				//std::exit(1);
+			}
+		}catch(Gtk::CssProviderError &ex){
+			
+			std::cerr << "Gtk::CssProvider::load_from_data() failed" << ex.what() << data << std::endl;
+		}catch(const Glib::Error& ex){
+			std::cerr << "Error, Gtk::CssProvider::load_from_data() failed: "
+				<< ex.what() << std::endl;
 		}
 		//auto screen = Gdk::Screen::get_default();
 		//auto ctx = m_taskbar->get_style_context();
@@ -121,13 +131,15 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 		ctx->add_provider_for_screen(m_refscreen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 		m_boxTaskBar->override_font(Pango::FontDescription("[Lucida Grande][bold Black][8]"));
 		m_boxTaskBar->pack_start(*m_taskbar, true, true, 0);
-		std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() == " << m_refscreen->get_width() << std::endl;
-		std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() - 2024 == " << m_refscreen->get_width() - 2024 << std::endl;
-		m_boxTaskBar->set_size_request(m_refscreen->get_width() - 2024, 36); // try and force it //
-		m_taskbar->set_size_request(m_refscreen->get_width() - 2028, 36);     // try and force it //
+		//std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() == " << m_refscreen->get_width() << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] m_refscreen->get_width() - 2024 == " << m_refscreen->get_width() - 2024 << std::endl;
+		//m_boxTaskBar->set_size_request(m_refscreen->get_width() - 2024, 36); // try and force it //
+		//m_taskbar->set_size_request(m_refscreen->get_width() - 2028, 36);     // try and force it //
 		Gdk::Geometry geom;
 		geom.max_width = m_refscreen->get_width() - 512;
 		geom.min_width = m_refscreen->get_width() - 512;
+	    std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" geom.max_width  == " << geom.max_width  << std::endl;
+	    std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" geom.min_width  == " << geom.min_width  << std::endl;
 		geom.base_width = -1;
 		geom.max_height = 38;
 		geom.min_height = 38;
@@ -159,9 +171,9 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	}
 
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_DOCK);
-	set_default_size(m_refscreen->get_width() - 49, 38);
-	resize(m_refscreen->get_width() - 49, 38);
-	set_size_request(m_refscreen->get_width() - 49, 38); // try and force it //
+	set_default_size(m_refscreen->get_width() - m_delta_x, 38);
+	resize(m_refscreen->get_width() - m_delta_x, 38);
+	set_size_request(m_refscreen->get_width() - m_delta_x, 38); // try and force it //
 	move(49, m_refscreen->get_height() - 40);
 	set_opacity(0.90);
 	set_keep_above(true);
@@ -175,6 +187,8 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	Gdk::Geometry geom;
 	geom.max_width = m_refscreen->get_width() - 512;
 	geom.min_width = m_refscreen->get_width() - 512;
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" geom.max_width  == " << geom.max_width  << std::endl;
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" geom.min_width  == " << geom.min_width  << std::endl;
 	geom.base_width = -1;
 	geom.max_height = 38;
 	geom.min_height = 38;
@@ -183,36 +197,82 @@ Main_window::Main_window(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	geom.width_inc = 1;
 	geom.win_gravity = GDK_GRAVITY_NORTH_WEST;
 	set_geometry_hints(*m_taskbar, geom, Gdk::HINT_MAX_SIZE | Gdk::HINT_MIN_SIZE);
-	resize(m_refscreen->get_width() - 49, 38);
-	move(49, m_refscreen->get_height() - 50);
-	gint32 data[4] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + 5};
 	wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
-	gdk_property_change(get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data), sizeof(gint32)*4);
-	gint32 data2[12] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + 5, 0, 0, 0, 0, 0, 0, 49, m_refscreen->get_width()};
-	gdk_property_change(get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT_PARTIAL")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data2), sizeof(gint32)*12);
+	size_pos_and_struts();
 }
 
 Main_window::~Main_window()
 {
 }
 
+void Main_window::size_pos_and_struts()
+{
+	//auto pos = m_global_font_colour.find_first_not_of("#0123456789ABCDEF");
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" m_global_font_colour == " << m_global_font_colour << std::endl;
+	if(m_global_font_colour.length() > 7){
+		m_global_font_colour = m_global_font_colour.substr(0, 7);
+	}
+	Gdk::RGBA rgba(m_global_font_colour);
+	boost::format bf("#%02X%02X%02X");
+	gushort red   = rgba.get_red_u() % 256;
+	gushort green = rgba.get_green_u() % 256;
+	gushort blue  = rgba.get_blue_u() % 256;
+	bf % red % green % blue; // in this line % means apply to format or insert into above it means modulo //
+	Glib::ustring global_font_colour = bf.str();
+	Glib::ustring css_data = "GtkWindow {\n    color: " + global_font_colour + ";\n    font-family: \"" + m_global_fontname + "\";\n}";
+	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" css_data == " << css_data << std::endl;
+	auto css = Gtk::CssProvider::create();
+	try{
+		if(!css->load_from_data(css_data)) {
+			std::cerr << "Failed to load css" << std::endl;
+			//std::exit(1);
+		}
+	}catch(Gtk::CssProviderError &ex){
+
+		std::cerr << "Gtk::CssProvider::load_from_data() failed" << ex.what() << "\tcss_data == " << css_data << std::endl;
+	}catch(const Glib::Error& ex){
+		std::cerr << "Error, Gtk::CssProvider::load_from_data() failed: "
+			<< ex.what() << std::endl;
+	}
+	auto ctx = get_style_context();
+	ctx->add_provider_for_screen(m_refscreen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	
+	resize(m_refscreen->get_width() - m_delta_x, 38);
+	move(m_delta_x, m_refscreen->get_height() - m_delta_y);
+#if __x86_64__ || __ppc64__
+	glong data[4] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + m_delta_clear};
+	gdk_property_change(this->get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT")), 
+	                    gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data), sizeof(glong)*4);
+	glong data2[12] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + m_delta_clear, 0, 0, 0, 0, 0, 0, m_delta_x, m_refscreen->get_width()};
+	gdk_property_change(this->get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT_PARTIAL")), 
+	                    gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data2), sizeof(glong)*12);
+#else
+	gint32 data[4] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + m_delta_clear};
+	gdk_property_change(this->get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data), sizeof(gint32)*4);
+	gint32 data2[12] = {0, 0, 0, std::max(get_height(), get_allocated_height()) + m_delta_clear, 0, 0, 0, 0, 0, 0, m_delta_x, m_refscreen->get_width()};
+	gdk_property_change(this->get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_STRUT_PARTIAL")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data2), sizeof(gint32)*12);
+	//gint32 data3[1] = {0};
+	//gdk_property_change(this->get_window()->gobj(), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("_NET_WM_WINDOW_TYPE_DOCK")), gdk_x11_xatom_to_atom(gdk_x11_get_xatom_by_name("CARDINAL")), 32, GDK_PROP_MODE_REPLACE, reinterpret_cast<guchar*>(data3), sizeof(gint32)*0);
+#endif
+}
+
 void Main_window::on_window_mapped()
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" m_refscreen->get_width() == " << m_refscreen->get_width() << std::endl;
-	std::cout << __FILE__ << '[' << __LINE__ << "] m_counter++ == " << m_counter++ << std::endl;
-	set_default_size(m_refscreen->get_width() - 49, 38);
-	resize(m_refscreen->get_width() - 49, 38);
-	set_size_request(m_refscreen->get_width() - 49, 38); // try and force it //
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" m_refscreen->get_width() == " << m_refscreen->get_width() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] m_counter++ == " << m_counter++ << std::endl;
+	set_default_size(m_refscreen->get_width() - m_delta_x, 38);
+	resize(m_refscreen->get_width() - m_delta_x, 38);
+	set_size_request(m_refscreen->get_width() - m_delta_x, 38); // try and force it //
 	move(49, m_refscreen->get_height() - 38);
 	set_opacity(0.85);
 }
 
 void Main_window::on_allocate(Gtk::Allocation& allocation)
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" allocation.get_width() == " << allocation.get_width() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" allocation.get_width() == " << allocation.get_width() << std::endl;
 	if(allocation.get_width() > m_refscreen->get_width() - 512){
 		allocation.set_width(m_refscreen->get_width() - 512);
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" allocation.get_width() == " << allocation.get_width() << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" allocation.get_width() == " << allocation.get_width() << std::endl;
 	}
 }
 
@@ -255,7 +315,7 @@ void Main_window::setup_desktops()
 	//m_refscreen = get_screen();
 	Glib::RefPtr<Gdk::Display> refDisplay = m_refscreen->get_display();
 	m_desktop_rows = refDisplay->get_n_screens();
-	std::cout << __FILE__ << '[' << __LINE__ << "] m_desktop_rows == " << m_desktop_rows << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] m_desktop_rows == " << m_desktop_rows << std::endl;
 	m_pagerDeskTop->set_n_rows(1);
 	m_pagerDeskTop->set_show_all(true);
 	m_pagerDeskTop->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
@@ -266,8 +326,8 @@ void Main_window::setup_desktops()
 
 GdkPixbuf* Main_window::on_load_icon(const Glib::ustring& icon_name, int size, unsigned flags)
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] icon_name == " << icon_name << std::endl;
-	std::cout << __FILE__ << '[' << __LINE__ << "] size == " << size << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] icon_name == " << icon_name << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] size == " << size << std::endl;
 	if(icon_name == "") return 0;
 	boost::filesystem::path icon_path(icon_name);
 	if(is_regular_file(icon_path)){
@@ -296,11 +356,18 @@ void Main_window::on_menuitem_Prefrences()
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@//
     //////////////////////////////////////////////////////////////////////////////
 	boost::property_tree::ptree pt = get_config();
-	m_dialogPreferences->set_font_name(pt.get("global.font_name", "Lucida Grande 10"));
-	Gdk::RGBA rgba(pt.get("global.font_colour", "#00FF00"));
+	m_dialogPreferences->set_font_name(pt.get("global.font_name", m_global_fontname));
+	Gdk::RGBA rgba(pt.get("global.font_colour", m_global_font_colour)); 
 	m_dialogPreferences->set_global_colour(rgba);
 	m_dialogPreferences->set_font_weight(static_cast<Pango::Weight>(pt.get("global.font_weight", 200)));
-	m_dialogPreferences->set_min_button_size(pt.get("toolbar.min_button_size", m_taskbar->get_min_button_size()));
+	m_dialogPreferences->set_HistoryLimit(pt.get("global.history_limit", m_history_limit));
+	m_dialogPreferences->set_DeltaX(pt.get("global.delta_x", m_delta_x));
+	m_dialogPreferences->set_DeltaClearance(pt.get("global.delta_clearance", m_delta_clear));
+	m_dialogPreferences->set_min_button_size(pt.get("taskbar.min_button_size", m_taskbar->get_min_button_size()));
+	m_dialogPreferences->set_taskbar_font_name(pt.get("taskbar.font_name", "Lucida Grande 10"));
+	Gdk::RGBA rgba_taskbar(pt.get("taskbar.font_colour", "#00FF00")); 
+	m_dialogPreferences->set_taskbar_font_colour(rgba_taskbar);
+	m_dialogPreferences->set_taskbar_font_weight(static_cast<Pango::Weight>(pt.get("taskbar.font_weight", 200)));
 	m_dialogPreferences->set_entryTimeFormatTopln(pt.get("clock.timeformat", m_clockformat));
 	m_dialogPreferences->set_entryTimeFormatBottomln(pt.get("clock.dateformat", m_dateformat));
 	m_dialogPreferences->set_clock_font_name(pt.get("clock.font_name", m_clockfontname));
@@ -314,27 +381,61 @@ void Main_window::on_menuitem_Prefrences()
 
 	// deal with results //
 	if(res){
-		Glib::ustring fontname = m_dialogPreferences->get_font_name();
-		std::cout << "Ok clicked. fontname == " << fontname << std::endl;
-		Pango::FontDescription fd(pango_font_description_from_string(fontname.c_str()));
-		std::cout << "Ok clicked. fontname == " << fontname << std::endl;
-		std::cout << "Ok clicked. fd.get_family() == " << fd.get_family() << std::endl;
-		std::cout << "Ok clicked. fd.get_style() == " << fd.get_style() << std::endl;
-		std::cout << "Ok clicked. fd.to_string() == " << fd.to_string() << std::endl;
-		std::cout << "Ok clicked. fd.get_size() == " << fd.get_size()/1000 << std::endl;
+		m_global_fontname = m_dialogPreferences->get_font_name();
+		//std::cout << "Ok clicked. fontname == " << fontname << std::endl;
+		Pango::FontDescription fd(pango_font_description_from_string(m_global_fontname.c_str()));
+		//std::cout << "Ok clicked. fontname == " << fontname << std::endl;
+		//std::cout << "Ok clicked. fd.get_family() == " << fd.get_family() << std::endl;
+		//std::cout << "Ok clicked. fd.get_style() == " << fd.get_style() << std::endl;
+		//std::cout << "Ok clicked. fd.to_string() == " << fd.to_string() << std::endl;
+		//std::cout << "Ok clicked. fd.get_size() == " << fd.get_size()/1000 << std::endl;
 		Gdk::RGBA rgba = m_dialogPreferences->get_global_colour();
+		boost::format bf("#%02X%02X%02X");
+		gushort red   = rgba.get_red_u() % 256;
+		gushort green = rgba.get_green_u() % 256;
+		gushort blue  = rgba.get_blue_u() % 256;
+		bf % red % green % blue; // in this line % means apply to format or insert into above it means modulo //
+		m_global_font_colour = bf.str();
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" m_global_font_colour == " << m_global_font_colour << std::endl;
+		if(m_global_font_colour.length() > 7){
+			m_global_font_colour = m_global_font_colour.substr(0, 7);
+		}
+		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<" m_global_font_colour == " << m_global_font_colour << std::endl;
 		Pango::Weight global_weight = m_dialogPreferences->get_font_weight();
+		m_history_limit = m_dialogPreferences->get_HistoryLimit();
+		m_delta_x = m_dialogPreferences->get_DeltaX();
+		m_delta_clear = m_dialogPreferences->get_DeltaClearance();
+
+		// taskbar //
 		int min_button_size = m_dialogPreferences->get_min_button_size();
+		Glib::ustring taskbar_fontname = m_dialogPreferences->get_taskbar_font_name();
+		Pango::FontDescription fd_taskbar(pango_font_description_from_string(taskbar_fontname.c_str()));
+		Pango::Weight taskbar_weight = m_dialogPreferences->get_taskbar_font_weight();
+		fd_taskbar.set_weight(taskbar_weight);
+		Gdk::RGBA rgba_taskbar = m_dialogPreferences->get_taskbar_font_colour();
+
+		// clock //
 		m_clockformat = m_dialogPreferences->get_entryTimeFormatTopln();
 		m_dateformat = m_dialogPreferences->get_entryTimeFormatBottomln();
 		m_clock_font_weight = m_dialogPreferences->get_clock_font_weight();
 		Gdk::RGBA clock_font_colour = m_dialogPreferences->get_clock_colour();
+		
 		// put in new tree //
 		boost::property_tree::ptree pt;
-		pt.put("global.font_name", fontname);
-		pt.put("global.font_colour", rgba.to_string());
+		pt.put("global.font_name", m_global_fontname);
+		pt.put("global.font_colour", m_global_font_colour);
 		pt.put("global.font_weight", static_cast<int>(global_weight));
-		pt.put("toolbar.min_button_size", min_button_size);
+		pt.put("global.history_limit", m_history_limit);
+		pt.put("global.delta_x", m_delta_x);
+		pt.put("global.delta_clearance", m_delta_clear);
+
+		// taskbar //
+		pt.put("taskbar.min_button_size", min_button_size);
+		pt.put("taskbar.font_name", taskbar_fontname);
+		pt.put("taskbar.font_colour", rgba_taskbar.to_string());
+		pt.put("taskbar.font_weight", static_cast<int>(taskbar_weight));
+
+		// clock //
 		pt.put("clock.timeformat", m_clockformat);
 		pt.put("clock.dateformat", m_dateformat);
 		pt.put("clock.font_name", m_clockfontname);
@@ -346,21 +447,22 @@ void Main_window::on_menuitem_Prefrences()
 		// apply to widgits //
 		m_taskbar->set_min_button_size(min_button_size);
 		fd.set_weight(global_weight);
-		m_taskbar->set_fontdescription(fd);
-		m_taskbar->override_font(fd);
+		m_taskbar->set_fontdescription(fd_taskbar);
+		m_taskbar->override_font(fd_taskbar);
 		override_font(fd);
+		size_pos_and_struts();
 		// font colour //
-		m_taskbar->override_color(rgba);
-		m_taskbar->set_colour(rgba);
+		m_taskbar->override_color(rgba_taskbar);
+		m_taskbar->set_colour(rgba_taskbar);
 		override_color(rgba);
 
 		// clock //
 		Pango::FontDescription fd_clock(pango_font_description_from_string(m_clockfontname.c_str()));
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
 		fd_clock.set_weight(m_clock_font_weight);
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
 		m_labelClock->override_font(fd_clock);
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " clock_font_colour.to_string() == " << clock_font_colour.to_string() << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " clock_font_colour.to_string() == " << clock_font_colour.to_string() << std::endl;
 		m_labelClock->override_color(clock_font_colour);
 		m_labelDate->override_font(fd_clock);
 		m_labelDate->override_color(clock_font_colour);
@@ -394,16 +496,16 @@ void Main_window::on_menuitem_RunApp()
 		cmd_hist.datetime_str = buffer;
 		cmd_hist.used_term = m_dialogRunApplication->get_use_term();
 		cmd_hist.cmd = cmd;
-		history.insert(history.begin(), cmd_hist);
+		history.insert(history.end(), cmd_hist);
 		save_cmd_history(history);
 		if(cmd_hist.used_term){
 			Glib::ustring command = "gnome-terminal --title=\"" + this->quoted(cmd) + "\" --execute " + cmd;
-			std::cout << "command == " << command << std::endl;
+			//std::cout << "command == " << command << std::endl;
 			int result = system((command + " &").c_str());
 		}else{
 			int result = system((cmd + " &").c_str());
 		}
-		std::cout << "Execute clicked." << std::endl;
+		//std::cout << "Execute clicked." << std::endl;
 	}else{
 		std::cout << "Cancel clicked." << std::endl;
 	}
@@ -438,25 +540,26 @@ std::vector<RunApp::CmdHist> Main_window::load_cmd_history()
 			std::string line, datestr, used_str, cmd;
 			bool used_term;
 			while(in){
-				result.insert(result.begin(), cmd_hist);
+				result.insert(result.end(), cmd_hist);
 				in >> cmd_hist;
 			}
 			in.close();
 		}
 	}
+	//std::reverse(result.begin(), result.end());
 	return result;
 }
 
 bool Main_window::save_cmd_history(std::vector<RunApp::CmdHist> history)
 {
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: history.size() == " << history.size() << std::endl;
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: m_history_limit == " << m_history_limit << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: history.size() == " << history.size() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: m_history_limit == " << m_history_limit << std::endl;
 	while(history.size() > m_history_limit){
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: history.size() == " << history.size() << std::endl;
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: m_history_limit == " << m_history_limit << std::endl;
-		history.erase(history.end() - 1);
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: history.size() == " << history.size() << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here: m_history_limit == " << m_history_limit << std::endl;
+		history.erase(history.begin());
 	}
-	std::reverse(history.begin(), history.end());
+	//std::reverse(history.begin(), history.end());
 	if(insure_config_path()){
 		std::string path = std::getenv("HOME");
 		path += "/.config/" + m_progname + "/cmd_history";
@@ -467,7 +570,7 @@ bool Main_window::save_cmd_history(std::vector<RunApp::CmdHist> history)
 				if(!out) return false;
 			}
 		}
-		bool result = out;
+		bool result = out.good();
 		out.close();
 		return result;
 	}
@@ -488,7 +591,7 @@ boost::property_tree::ptree Main_window::get_config() const
 			boost::property_tree::ini_parser::read_ini(path, pt);
 		}
 		catch(std::exception& e){
-			std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t caught exception:msg: " << e.what() << std::endl;
+			//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t caught exception:msg: " << e.what() << std::endl;
 		}
 	}
 	return pt;
@@ -508,13 +611,23 @@ void Main_window::set_up_config_file()
 	if(insure_config_path()){
 		std::string path = std::getenv("HOME");
 		path += "/.config/" + m_progname + "/" + m_progname + ".ini";
-		std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here path == " << path << std::endl;
+		//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ <<"\t got here path == " << path << std::endl;
 		if(!boost::filesystem::exists(path) || (boost::filesystem::is_regular_file(path) && boost::filesystem::is_empty(path))){
 			boost::property_tree::ptree pt;
 			pt.put("global.font_name", "Lucida Grande 10");
-			pt.put("global.font_colour", "#00FF00");
+			pt.put("global.font_colour", m_global_font_colour);
 			pt.put("global.font_weight", 200);
-			pt.put("toolbar.min_button_size", 150);
+			pt.put("global.history_limit", m_history_limit);
+			pt.put("global.delta_x", m_delta_x);
+			pt.put("global.delta_clearance", m_delta_clear);
+
+			// taskbar //
+			pt.put("taskbar.min_button_size", 150);
+			pt.put("taskbar.font_name", "Lucida Grande 9");
+			pt.put("taskbar.font_colour", "#000000");
+			pt.put("taskbar.font_weight", 400);
+			
+			// clock //
 			pt.put("clock.timeformat", m_clockformat);
 			pt.put("clock.dateformat", m_dateformat);
 			pt.put("clock.font_name", m_clockfontname);
@@ -537,12 +650,25 @@ void Main_window::set_up_config_file()
 void Main_window::apply_defaults()
 {
 	boost::property_tree::ptree pt = get_config();
-	Glib::ustring fontname = pt.get("global.font_name", "Lucida Grande 10");
-	Pango::FontDescription fd(pango_font_description_from_string(fontname.c_str()));
-	Gdk::RGBA rgba(pt.get("global.font_colour", "#00FF00"));
+	m_global_fontname = pt.get("global.font_name", "Lucida Grande 10");
+	Pango::FontDescription fd(pango_font_description_from_string(m_global_fontname.c_str()));
+	m_global_font_colour = pt.get("global.font_colour", m_global_font_colour);
+	Gdk::RGBA rgba(m_global_font_colour);
 	Pango::Weight global_weight = static_cast<Pango::Weight>(pt.get("global.font_weight", 300));
+	m_history_limit = pt.get("global.history_limit", m_history_limit);
+	m_delta_x = pt.get("global.delta_x", m_delta_x);
+	m_delta_clear = pt.get("global.delta_clearance", m_delta_clear);
 	fd.set_weight(global_weight);
-	int min_button_size = pt.get("toolbar.min_button_size", 150);
+
+	// taskbar //
+	int min_button_size = pt.get("taskbar.min_button_size", 150);
+	Glib::ustring taskbar_fontname = pt.get("taskbar.font_name", "Lucida Grande 9");
+	Pango::FontDescription fd_taskbar(pango_font_description_from_string(taskbar_fontname.c_str()));
+	Gdk::RGBA rgba_taskbar(pt.get("taskbar.font_colour", "#000000"));
+	Pango::Weight taskbar_weight = static_cast<Pango::Weight>(pt.get("taskbar.font_weight", 400));
+	fd_taskbar.set_weight(taskbar_weight);
+	
+	// clock //
 	m_clockformat = pt.get("clock.timeformat", m_clockformat);
 	m_dateformat = pt.get("clock.dateformat", m_dateformat);
 	m_clockfontname = pt.get("clock.font_name", m_clockfontname);
@@ -551,25 +677,26 @@ void Main_window::apply_defaults()
 	// apply to widgits //
 	m_taskbar->set_min_button_size(min_button_size);
 	fd.set_weight(global_weight);
-	m_taskbar->set_fontdescription(fd);
-	m_taskbar->override_font(fd);
+	m_taskbar->set_fontdescription(fd_taskbar);
+	m_taskbar->override_font(fd_taskbar);
 	override_font(fd);
 	// font colour //
-	m_taskbar->override_color(rgba);
-	m_taskbar->set_colour(rgba);
+	m_taskbar->override_color(rgba_taskbar);
+	m_taskbar->set_colour(rgba_taskbar);
 	override_color(rgba);
 
 	// clock //
 	Pango::FontDescription fd_clock(pango_font_description_from_string(m_clockfontname.c_str()));
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
 	fd_clock.set_weight(m_clock_font_weight);
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
+	//std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " fd_clock.to_string() == " << fd_clock.to_string() << std::endl;
 	m_labelClock->override_font(fd_clock);
-	std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " clock_font_colour.to_string() == " << clock_font_colour.to_string() << std::endl;
+	//std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << " clock_font_colour.to_string() == " << clock_font_colour.to_string() << std::endl;
 	m_labelClock->override_color(clock_font_colour);
 	m_labelDate->override_font(fd_clock);
 	m_labelDate->override_color(clock_font_colour);
-	std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t leaving now" << std::endl;
+	size_pos_and_struts();
+	//std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ << "\t leaving now" << std::endl;
 }
 
 Glib::ustring Main_window::quoted(Glib::ustring s) const

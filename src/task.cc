@@ -42,6 +42,8 @@ namespace gzz {
 		m_label = Gtk::manage(new Gtk::Label(m_wnck_window->get_name()));
 		m_label->set_ellipsize(Pango::ELLIPSIZE_END);
 		m_label->set_justify(Gtk::JUSTIFY_LEFT);
+		m_label->set_tooltip_markup("<b>" + hmlentities(m_wnck_window->get_name()) + "</b>");
+		m_label->set_has_tooltip(true);
 		m_label->set_margin_left(5);
 		//m_hbox->pack_start(*m_label, Gtk::PACK_SHRINK|Gtk::PACK_EXPAND_WIDGET, 2);
 		m_hbox->pack_start(*m_label, true, true, 0);
@@ -71,6 +73,8 @@ namespace gzz {
 		m_label = Gtk::manage(new Gtk::Label(m_wnck_classgroup->get_name()));
 		m_label->set_ellipsize(Pango::ELLIPSIZE_END);
 		m_label->set_justify(Gtk::JUSTIFY_LEFT);
+		m_label->set_tooltip_markup("<b>" + hmlentities(m_wnck_classgroup->get_name()) + "</b>");
+		m_label->set_has_tooltip(true);
 		m_label->set_margin_left(5);
 		//m_hbox->pack_start(*m_label, Gtk::PACK_SHRINK|Gtk::PACK_EXPAND_WIDGET, 2);
 		m_hbox->pack_start(*m_label, true, true, 0);
@@ -111,8 +115,8 @@ namespace gzz {
 	void Task::on_clicked()
 	{
 		if(m_wnck_windows.size() == 1){
-			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				      << " entering 1 window " << std::endl;
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				      << " entering 1 window " << std::endl;*/
 			if(!m_wnck_window) return;
 			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
 				      << "\t past return m_wnck_window == " << m_wnck_window << std::endl;
@@ -124,18 +128,18 @@ namespace gzz {
 				m_wnck_window->unmake_below();
 			}else if(m_wnck_window->is_above()){
 				//m_wnck_window->unmake_above();
-				std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					      << " minimizing " << std::endl;
+				/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					      << " minimizing " << std::endl;*/
 				m_wnck_window->minimize();
 			}else{
 				m_wnck_window->activate(gtk_get_current_event_time());
 			}
 		}else if(m_wnck_windows.size() > 1){
-			std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				      << " entering > 1 window " << std::endl;
+			/*std::cerr << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				      << " entering > 1 window " << std::endl;*/
 			if(m_menu){
-				std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-				          << " deleting m_menu == " << m_menu << std::endl;
+				/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+				          << " deleting m_menu == " << m_menu << std::endl;*/
 				delete m_menu;
 				m_menu = 0;
 			}
@@ -143,26 +147,26 @@ namespace gzz {
 			Gtk::ImageMenuItem* item;
 			Gtk::Image* image;
 			for(auto win : m_wnck_windows){
-				std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-						  << " adding menuitem win == " << win << std::endl;
+				/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+						  << " adding menuitem win == " << win << std::endl;*/
 				try {
 					image = Gtk::manage(new Gtk::Image(win->get_icon()));
 					item = Gtk::manage(new Gtk::ImageMenuItem(*image, win->get_name()));
 					item->signal_activate().connect(
 					                                sigc::bind<Wnck::Window*>(sigc::mem_fun(*this,
 					                                                                        &Task::on_menu_item_activate), win));
-					std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-						      << " adding menuitem " << std::endl;
+					/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+						      << " adding menuitem " << std::endl;*/
 					m_menu->append(*item);
 					item->show_all();
 				}
 				catch(std::exception& e){
-					std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-						      << " error exception caught: " << e.what() << std::endl;
+					/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+						      << " error exception caught: " << e.what() << std::endl;*/
 				}
 				catch(...){
-					std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-					          << " unknown eception caught " << std::endl;
+					/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+					          << " unknown eception caught " << std::endl;*/
 				}
 			}
 
@@ -291,6 +295,8 @@ namespace gzz {
 					      << m_wnck_window->has_name() << std::endl;*/
 				m_label->set_text(m_wnck_window->get_name());
 			}
+			m_label->set_tooltip_markup("<b>" + hmlentities(m_wnck_window->get_name()) + "</b>");
+			m_label->set_has_tooltip(true);
 		}else if(m_wnck_windows.size() > 1){
 			if(!m_arrow){
 				m_arrow = Gtk::manage(new Gtk::Arrow(Gtk::ARROW_DOWN, Gtk::SHADOW_ETCHED_IN));
@@ -303,6 +309,8 @@ namespace gzz {
 					  << " got here" << std::endl;*/
 			m_image->set(m_wnck_classgroup->get_icon());
 			m_label->set_text(m_wnck_classgroup->get_name());
+			m_label->set_tooltip_markup("<b>" + hmlentities(m_wnck_classgroup->get_name()) + "</b>");
+			m_label->set_has_tooltip(true);
 		}else{
 		}
 	}
@@ -354,6 +362,30 @@ namespace gzz {
 	bool Task::get_destructed() const
 	{
 		return m_destructed;
+	}
+
+	Glib::ustring Task::hmlentities(const Glib::ustring& s) const
+	{
+		Glib::ustring result;
+		for(char c : s){
+			switch(c){
+				case('<'):
+					result += "&lt;";
+					break;
+				case('>'):
+					result += "&gt;";
+					break;
+				case('&'):
+					result += "&amp;";
+					break;
+				case('"'):
+					result += "&quot;";
+					break;
+				default:
+					result += c;
+			} // switch(c) //
+		} // for(char c : s) //
+		return result;
 	}
 	
 

@@ -40,9 +40,8 @@ int main (int argc, char *argv[])
 {
 	Gtk::Main kit(argc, argv);
 	Wnck::wrap_init();
-	std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
-        		  << " after Wnck::wrap_init() " << std::endl;
-
+	/*std::cout << __FILE__ << '[' << __LINE__ << "] " << __PRETTY_FUNCTION__ 
+        		  << " after Wnck::wrap_init() " << std::endl;*/
 
 	//Load the Glade file and instiate its widgets:
 	Glib::RefPtr<Gtk::Builder> builder;
