@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Gzzpanel
+GenericName=Taskbar
+Comment=Taskbar
+Comment[en_CA]=Taskbar
+Comment[en_GB]=Taskbar
+Comment[en_AU]=Taskbar
+TryExec=gzzpanel
+Exec=gzzpanel 
+Terminal=false
+Type=Application
+Keywords=music;player;
+Icon=gzzpanel
+Categories=Utility;taskbar;
